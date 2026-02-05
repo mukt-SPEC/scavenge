@@ -25,17 +25,34 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundDark,
       body: IndexedStack(index: _page, children: UiConstants.appPages),
       bottomNavigationBar: CupertinoTabBar(
+        border: Border.all(style: BorderStyle.none),
+        iconSize: 24,
+        backgroundColor: AppColors.surfaceDark,
         currentIndex: _page,
         onTap: onPageChange,
         items: [
           BottomNavigationBarItem(
-            
-            icon: Icon(
-              MingCute.home_2_fill,
-              color: _page == 0 ? AppColors.surfaceDark : AppColors.white,
-            ),
+            activeIcon: Icon(MingCute.home_2_fill, color: AppColors.white),
+            icon: Icon(MingCute.home_2_fill),
+          ),
+          BottomNavigationBarItem(
+            activeIcon: Icon(MingCute.wallet_fill, color: AppColors.white),
+            icon: Icon(MingCute.wallet_fill),
+          ),
+          BottomNavigationBarItem(
+            activeIcon: Icon(MingCute.sparkles_2_fill, color: AppColors.white),
+            icon: Icon(MingCute.sparkles_2_fill),
+          ),
+          BottomNavigationBarItem(
+            activeIcon: Icon(MingCute.user_3_fill, color: AppColors.white),
+            icon: Icon(MingCute.user_3_fill),
+          ),
+          BottomNavigationBarItem(
+            activeIcon: CircleAvatar(radius: 16),
+            icon: CircleAvatar(radius: 16),
           ),
         ],
       ),

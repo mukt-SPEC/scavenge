@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:scavenge/features/Home/view/home_view.dart';
 
 class UiConstants {
-  static const List<Widget> appPages = [];
+  static List<Widget> appPages = [
+    HomeView(),
+    Container(),
+    Container(),
+    Container(),
+    Container(),
+  ];
 }
