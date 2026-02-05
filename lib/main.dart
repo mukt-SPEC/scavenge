@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scavenge/Theme/app_theme.dart';
-import 'package:scavenge/features/Home/view/home_page.dart';
+import 'package:scavenge/features/home/view/home_page.dart';
 import 'package:scavenge/provider/theme_provider';
 
 void main() {
