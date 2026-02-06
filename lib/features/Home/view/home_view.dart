@@ -12,7 +12,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final List<Map<String, dynamic>> gridData = [
+  List<Map<String, dynamic>> gridData = [
     {
       'icon': MingCuteIcons.mgc_wallet_3_fill,
       'label': 'Wallet',
@@ -25,7 +25,7 @@ class _HomeViewState extends State<HomeView> {
       'backgroundColor': Colors.blue,
     },
     {
-      'icon': MingCuteIcons.mgc_shop_fill,
+      'icon': MingCuteIcons.mgc_shopping_bag_2_fill,
       'label': 'Trade',
       'backgroundColor': Colors.purple,
     },
@@ -34,6 +34,13 @@ class _HomeViewState extends State<HomeView> {
       'label': 'Recycle',
       'backgroundColor': Colors.teal,
     },
+  ];
+
+  List iconColors = [
+    Colors.green[50],
+    Colors.blue[50],
+    Colors.purple[50],
+    Colors.teal[50],
   ];
   @override
   Widget build(BuildContext context) {
@@ -45,6 +52,15 @@ class _HomeViewState extends State<HomeView> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.amber,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              height: 64,
+              width: double.infinity,
+            ),
+            SizedBox(height: 16),
             Text(
               'Quick Action',
               style: Theme.of(
@@ -54,6 +70,7 @@ class _HomeViewState extends State<HomeView> {
 
             Expanded(
               child: MasonryGridView.count(
+                padding: EdgeInsets.only(top: 8),
                 crossAxisCount: 2,
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
@@ -61,9 +78,10 @@ class _HomeViewState extends State<HomeView> {
                 itemBuilder: (context, index) {
                   final item = gridData[index];
                   return QuickAction(
-                    iconColor: Colors.black,
+                    iconColor: iconColors[index],
                     icon: item['icon'],
                     text: item['label'],
+                    textColor: iconColors[index],
                     backgroundColor: item['backgroundColor'],
                   );
                 },

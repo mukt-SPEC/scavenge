@@ -5,7 +5,9 @@ class QuickAction extends StatelessWidget {
   final Color? backgroundColor;
   final Color? iconColor;
   final String text;
+  final Color? textColor;
   const QuickAction({
+    this.textColor,
     this.iconColor,
     this.backgroundColor,
     required this.icon,
@@ -16,17 +18,22 @@ class QuickAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
-        spacing: 24,
+        spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon),
-          Text(text, style: Theme.of(context).textTheme.titleMedium),
+          Icon(icon, color: iconColor, size: 24),
+          Text(
+            text,
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(color: textColor ?? Colors.white),
+          ),
         ],
       ),
     );
