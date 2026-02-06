@@ -22,10 +22,10 @@ class QuickAction extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
-        spacing: 16,
+        spacing: 24,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: iconColor),
+          Icon(icon),
           Text(text, style: Theme.of(context).textTheme.titleMedium),
         ],
       ),

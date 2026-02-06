@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scavenge/Theme/app_colors.dart';
 import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/constants/ui_constants.dart';
-import 'package:icons_plus/icons_plus.dart';
+//import 'package:icons_plus/icons_plus.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -35,16 +35,16 @@ class _HomePageState extends ConsumerState<HomePage> {
         onTap: onPageChange,
         items: [
           BottomNavigationBarItem(
-            activeIcon: Icon(MingCute.home_2_fill, color: AppColors.white),
-            icon: Icon(MingCute.home_2_fill),
+            activeIcon: Icon(MingCuteIcons.mgc_home_2_fill, color: AppColors.white),
+            icon: Icon(MingCuteIcons.mgc_home_2_fill),
           ),
           BottomNavigationBarItem(
-            activeIcon: Icon(MingCute.wallet_3_fill, color: AppColors.white),
+            activeIcon: Icon(MingCuteIcons.mgc_wallet_3_fill, color: AppColors.white),
             icon: Icon(MingCuteIcons.mgc_wallet_3_fill),
           ),
           BottomNavigationBarItem(
-            activeIcon: Icon(MingCute.sparkles_2_fill, color: AppColors.white),
-            icon: Icon(MingCuteIcons.mgc_sparkles_fill),
+            activeIcon: Icon(MingCuteIcons.mgc_bling_fill, color: AppColors.white),
+            icon: Icon(MingCuteIcons.mgc_bling_fill),
           ),
           BottomNavigationBarItem(
             activeIcon: Icon(
