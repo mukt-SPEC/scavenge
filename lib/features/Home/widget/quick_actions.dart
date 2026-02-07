@@ -24,7 +24,7 @@ class QuickAction extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
-        spacing: 12,
+        spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: iconColor, size: 24),
