@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
+import 'package:scavenge/features/home/widget/header.dart';
 import 'package:scavenge/features/home/widget/quick_actions.dart';
 
 class HomeView extends StatefulWidget {
@@ -91,12 +92,14 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 24),
+              HomePageHeader(),
+              SizedBox(height: 8),
               Text(
                 'Quick Action',
                 style: Theme.of(
                   context,
-                ).textTheme.bodyLarge!.copyWith(color: Color(0xffffffff)),
+                ).textTheme.bodyMedium!.copyWith(color: Color(0XFFB9B9B9)),
               ),
 
               MasonryGridView.count(
@@ -117,12 +120,12 @@ class _HomeViewState extends State<HomeView> {
                   );
                 },
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
               Text(
                 'Analytics',
                 style: Theme.of(
                   context,
-                ).textTheme.bodyLarge!.copyWith(color: Color(0xffffffff)),
+                ).textTheme.bodyMedium!.copyWith(color: Color(0XFFB9B9B9)),
               ),
               SizedBox(height: 8),
               Container(
