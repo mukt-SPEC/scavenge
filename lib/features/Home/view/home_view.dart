@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
+import 'package:scavenge/constants/app_images.dart';
 import 'package:scavenge/features/home/widget/header.dart';
 import 'package:scavenge/features/home/widget/quick_actions.dart';
 
@@ -129,15 +130,110 @@ class _HomeViewState extends State<HomeView> {
               ),
               SizedBox(height: 8),
               Container(
+                padding: EdgeInsets.symmetric(horizontal: 12),
                 height: 88,
+
                 decoration: BoxDecoration(
+                  border: Border.all(color: Color.fromARGB(255, 48, 48, 48)),
                   color: AppColors.cardDark,
                   borderRadius: BorderRadius.circular(20),
                 ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      spacing: 8,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          spacing: 4,
+                          children: [
+                            Icon(
+                              MingCuteIcons.mgc_cash_2_fill,
+                              color: Color(0xffb9b9b9),
+                              size: 16,
+                            ),
+                            Text(
+                              'Total Earning',
+                              style: Theme.of(context).textTheme.labelLarge!
+                                  .copyWith(color: Color(0xffb9b9b9)),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          '\$ 50.00',
+                          style: Theme.of(context).textTheme.titleLarge!
+                              .copyWith(color: Color(0xfff2f2f2)),
+                        ),
+                      ],
+                    ),
+                    Image.asset(
+                      AppImages.graph,
+                      width: 64,
+                      height: 64,
+                      // scale: 0.2,
+                    ),
+                  ],
+                ),
               ),
+              SizedBox(height: 8),
+              MostRecycled(),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MostRecycled extends StatelessWidget {
+  const MostRecycled({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      height: 88,
+      decoration: BoxDecoration(
+        border: Border.all(color: Color.fromARGB(255, 48, 48, 48)),
+        color: AppColors.cardDark,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            spacing: 8,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                spacing: 4,
+                children: [
+                  Icon(
+                    MingCuteIcons.mgc_wastebasket_fill,
+                    color: Color(0xffb9b9b9),
+                    size: 16,
+                  ),
+                  Text(
+                    'Most Recycled Material ',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge!.copyWith(color: Color(0xffb9b9b9)),
+                  ),
+                ],
+              ),
+              Text(
+                'Paper',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge!.copyWith(color: Color(0xfff2f2f2)),
+              ),
+            ],
+          ),
+          Image.asset(AppImages.paper, width: 64, height: 64),
+        ],
       ),
     );
   }
