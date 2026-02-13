@@ -3,9 +3,10 @@ import 'package:scavenge/common/enums.dart';
 sealed class User {
   final String id;
   final String name;
+  final String email;
+  final String phoneNumber;
   final String? profilePicUrl;
   final double walletBalance;
-  
   final String? fcmToken;
   final Location location;
   final bool isLiveChatActive;
@@ -13,16 +14,16 @@ sealed class User {
   const User({
     required this.id,
     required this.name,
+    required this.email,
+    required this.phoneNumber,
     this.profilePicUrl,
     required this.walletBalance,
-   
     this.fcmToken,
     required this.location,
     required this.isLiveChatActive,
   });
 }
 
-/// Represents a standard app user (e.g., Mustapha)
 class Customer extends User {
   final List<WasteType> preferredWasteTypes;
   final List<Transaction> transactionHistory;
@@ -31,9 +32,10 @@ class Customer extends User {
   const Customer({
     required super.id,
     required super.name,
+    required super.email,
+    required super.phoneNumber,
     super.profilePicUrl,
     super.walletBalance = 0.0,
-    
     super.fcmToken,
     required super.location,
     super.isLiveChatActive = false,
@@ -41,14 +43,13 @@ class Customer extends User {
     this.transactionHistory = const [],
     this.activePickupRequests = 0,
   });
-
-  // Equivalent to Kotlin's .copy()
   Customer copyWith({
     String? id,
     String? name,
+    String? email,
+    String? phoneNumber,
     String? profilePicUrl,
     double? walletBalance,
-    int? rewardPoints,
     String? fcmToken,
     Location? location,
     bool? isLiveChatActive,
@@ -59,9 +60,10 @@ class Customer extends User {
     return Customer(
       id: id ?? this.id,
       name: name ?? this.name,
+      email: email ?? this.email,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       profilePicUrl: profilePicUrl ?? this.profilePicUrl,
       walletBalance: walletBalance ?? this.walletBalance,
-     
       fcmToken: fcmToken ?? this.fcmToken,
       location: location ?? this.location,
       isLiveChatActive: isLiveChatActive ?? this.isLiveChatActive,
@@ -70,9 +72,47 @@ class Customer extends User {
       activePickupRequests: activePickupRequests ?? this.activePickupRequests,
     );
   }
+
+  factory Customer.fromMap(Map<String, dynamic> map) {
+    return Customer(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      phoneNumber: map['phoneNumber'] ?? '',
+      profilePicUrl: map['profilePicUrl'],
+      walletBalance: (map['walletBalance'] as num?)?.toDouble() ?? 0.0,
+      fcmToken: map['fcmToken'],
+      location: Location.fromMap(map['location']),
+      isLiveChatActive: map['isLiveChatActive'] ?? false,
+      preferredWasteTypes:
+          (map['preferredWasteTypes'] as List?)
+              ?.map((e) => WasteType.values.byName(e))
+              .toList() ??
+          [],
+      activePickupRequests: map['activePickupRequests'] ?? 0,
+      // Note: transactionHistory usually handled separately in sub-collections
+    );
+  }
+
+  /// Converts Customer Object to Map (JSON)
+  Map<String, dynamic> toMap() {
+    return {
+      'role': 'customer',
+      'id': id,
+      'name': name,
+      'email': email,
+      'phoneNumber': phoneNumber,
+      'profilePicUrl': profilePicUrl,
+      'walletBalance': walletBalance,
+      'fcmToken': fcmToken,
+      'location': location.toMap(),
+      'isLiveChatActive': isLiveChatActive,
+      'preferredWasteTypes': preferredWasteTypes.map((e) => e.name).toList(),
+      'activePickupRequests': activePickupRequests,
+    };
+  }
 }
 
-/// Represents a recycling agent
 class Agent extends User {
   final bool isAvailable;
   final List<WasteType> acceptedWasteTypes;
@@ -83,9 +123,10 @@ class Agent extends User {
   const Agent({
     required super.id,
     required super.name,
+    required super.email,
+    required super.phoneNumber,
     super.profilePicUrl,
     super.walletBalance = 0.0,
-    
     super.fcmToken,
     required super.location,
     super.isLiveChatActive = false,
@@ -99,9 +140,10 @@ class Agent extends User {
   Agent copyWith({
     String? id,
     String? name,
+    String? email,
+    String? phoneNumber,
     String? profilePicUrl,
     double? walletBalance,
-    int? rewardPoints,
     String? fcmToken,
     Location? location,
     bool? isLiveChatActive,
@@ -114,9 +156,10 @@ class Agent extends User {
     return Agent(
       id: id ?? this.id,
       name: name ?? this.name,
+      email: email ?? this.email,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       profilePicUrl: profilePicUrl ?? this.profilePicUrl,
       walletBalance: walletBalance ?? this.walletBalance,
-     
       fcmToken: fcmToken ?? this.fcmToken,
       location: location ?? this.location,
       isLiveChatActive: isLiveChatActive ?? this.isLiveChatActive,
@@ -126,5 +169,49 @@ class Agent extends User {
       completedPickups: completedPickups ?? this.completedPickups,
       vehicleLicensePlate: vehicleLicensePlate ?? this.vehicleLicensePlate,
     );
+  }
+
+
+  factory Agent.fromMap(Map<String, dynamic> map) {
+    return Agent(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      phoneNumber: map['phoneNumber'] ?? '',
+      profilePicUrl: map['profilePicUrl'],
+      walletBalance: (map['walletBalance'] as num?)?.toDouble() ?? 0.0,
+      fcmToken: map['fcmToken'],
+      location: Location.fromMap(map['location']),
+      isLiveChatActive: map['isLiveChatActive'] ?? false,
+      isAvailable: map['isAvailable'] ?? true,
+      rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
+      completedPickups: map['completedPickups'] ?? 0,
+      vehicleLicensePlate: map['vehicleLicensePlate'],
+      acceptedWasteTypes:
+          (map['acceptedWasteTypes'] as List?)
+              ?.map((e) => WasteType.values.byName(e))
+              .toList() ??
+          WasteType.values,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'role': 'agent',
+      'id': id,
+      'name': name,
+      'email': email,
+      'phoneNumber': phoneNumber,
+      'profilePicUrl': profilePicUrl,
+      'walletBalance': walletBalance,
+      'fcmToken': fcmToken,
+      'location': location.toMap(),
+      'isLiveChatActive': isLiveChatActive,
+      'isAvailable': isAvailable,
+      'rating': rating,
+      'completedPickups': completedPickups,
+      'vehicleLicensePlate': vehicleLicensePlate,
+      'acceptedWasteTypes': acceptedWasteTypes.map((e) => e.name).toList(),
+    };
   }
 }
