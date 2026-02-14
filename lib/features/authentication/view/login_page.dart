@@ -9,9 +9,7 @@ class LoginPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
-      body: SafeArea(child: Column(
-        
-      )),
+      body: SafeArea(child: Column()),
     );
   }
 }

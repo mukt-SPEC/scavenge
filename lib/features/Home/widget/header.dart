@@ -11,7 +11,7 @@ class HomePageHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
-          spacing: 4,
+          // spacing: 0,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -28,7 +28,7 @@ class HomePageHeader extends StatelessWidget {
             ),
           ],
         ),
-        Image.asset(AppImages.earth, width: 96, height: 96),
+        // Image.asset(AppImages.earth, width: 96, height: 96),
       ],
     );
   }

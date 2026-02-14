@@ -168,12 +168,12 @@ class _HomeViewState extends State<HomeView> {
                         ),
                       ],
                     ),
-                    Image.asset(
-                      AppImages.graph,
-                      width: 64,
-                      height: 64,
-                      // scale: 0.2,
-                    ),
+                    // Image.asset(
+                    //   AppImages.graph,
+                    //   width: 48,
+                    //   height: 48,
+                    //   // scale: 0.2,
+                    // ),
                   ],
                 ),
               ),
@@ -232,7 +232,7 @@ class MostRecycled extends StatelessWidget {
               ),
             ],
           ),
-          Image.asset(AppImages.paper, width: 64, height: 64),
+          // Image.asset(AppImages.paper, width: 64, height: 64),
         ],
       ),
     );
