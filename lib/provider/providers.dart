@@ -14,3 +14,7 @@ final firestoreProvider = Provider<FirebaseFirestore>((ref) {
 final firebaseStorageProvider = Provider<FirebaseStorage>((ref) {
   return FirebaseStorage.instance;
 });
+
+final authStateChangesProvider = StreamProvider.autoDispose((ref) {
+  return ref.read(firebaseAuthProvider).authStateChanges();
+});

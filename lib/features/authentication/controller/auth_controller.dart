@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:scavenge/features/authentication/model/authstate.dart';
 import 'package:scavenge/features/authentication/service/auth_service.dart';
 
+final authControllerProvider = StateNotifierProvider((ref) {
+  return AuthController(authservice: ref.read(authServiceProvider), ref: ref);
+});
+
 class AuthController extends StateNotifier<AuthState> {
   final AuthService _authService;
   final Ref _ref;

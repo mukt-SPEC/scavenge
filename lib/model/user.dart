@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scavenge/common/enums.dart';
+import 'package:scavenge/model/location.dart';
 
-sealed class User {
+sealed class UserModel {
   final String id;
   final String name;
   final String email;
@@ -8,10 +10,10 @@ sealed class User {
   final String? profilePicUrl;
   final double walletBalance;
   final String? fcmToken;
-  final Location location;
+  final Location? location;
   final bool isLiveChatActive;
 
-  const User({
+  const UserModel({
     required this.id,
     required this.name,
     required this.email,
@@ -19,12 +21,14 @@ sealed class User {
     this.profilePicUrl,
     required this.walletBalance,
     this.fcmToken,
-    required this.location,
+    this.location,
     required this.isLiveChatActive,
   });
+
+  Map<String, dynamic> toMap();
 }
 
-class Customer extends User {
+class Customer extends UserModel {
   final List<WasteType> preferredWasteTypes;
   final List<Transaction> transactionHistory;
   final int activePickupRequests;
@@ -37,7 +41,7 @@ class Customer extends User {
     super.profilePicUrl,
     super.walletBalance = 0.0,
     super.fcmToken,
-    required super.location,
+    super.location,
     super.isLiveChatActive = false,
     this.preferredWasteTypes = const [],
     this.transactionHistory = const [],
@@ -95,6 +99,7 @@ class Customer extends User {
   }
 
   /// Converts Customer Object to Map (JSON)
+  @override
   Map<String, dynamic> toMap() {
     return {
       'role': 'customer',
@@ -105,7 +110,7 @@ class Customer extends User {
       'profilePicUrl': profilePicUrl,
       'walletBalance': walletBalance,
       'fcmToken': fcmToken,
-      'location': location.toMap(),
+      'location': location!.toMap(),
       'isLiveChatActive': isLiveChatActive,
       'preferredWasteTypes': preferredWasteTypes.map((e) => e.name).toList(),
       'activePickupRequests': activePickupRequests,
@@ -113,7 +118,7 @@ class Customer extends User {
   }
 }
 
-class Agent extends User {
+class Agent extends UserModel {
   final bool isAvailable;
   final List<WasteType> acceptedWasteTypes;
   final double rating;
@@ -128,7 +133,7 @@ class Agent extends User {
     super.profilePicUrl,
     super.walletBalance = 0.0,
     super.fcmToken,
-    required super.location,
+    super.location,
     super.isLiveChatActive = false,
     this.isAvailable = true,
     this.acceptedWasteTypes = WasteType.values,
@@ -171,7 +176,6 @@ class Agent extends User {
     );
   }
 
-
   factory Agent.fromMap(Map<String, dynamic> map) {
     return Agent(
       id: map['id'] ?? '',
@@ -195,6 +199,7 @@ class Agent extends User {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'role': 'agent',
@@ -205,7 +210,7 @@ class Agent extends User {
       'profilePicUrl': profilePicUrl,
       'walletBalance': walletBalance,
       'fcmToken': fcmToken,
-      'location': location.toMap(),
+      'location': location!.toMap(),
       'isLiveChatActive': isLiveChatActive,
       'isAvailable': isAvailable,
       'rating': rating,

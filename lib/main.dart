@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:scavenge/common/error_screen.dart';
+import 'package:scavenge/provider/providers.dart';
 import 'firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scavenge/Theme/app_theme.dart';
@@ -22,7 +24,26 @@ class ScavengeApp extends ConsumerWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
-      home: HomePage(),
+      home: ref
+          .watch(authStateChangesProvider)
+          .when(
+            data: (user){
+              if(user == null){
+                
+              }
+            },
+            error: (error, stackTrace) {
+              return ErrorScreen(
+                error: error.toString(),
+                onRefresh: () {
+                  ref.invalidate(authStateChangesProvider);
+                },
+              );
+            },
+            loading: () {
+              return SizedBox();
+            },
+          ),
       debugShowCheckedModeBanner: false,
     );
   }
