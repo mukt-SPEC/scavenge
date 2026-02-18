@@ -2,11 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:scavenge/common/error_screen.dart';
 import 'package:scavenge/provider/providers.dart';
+import 'package:scavenge/provider/theme_provider.dart';
 import 'firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scavenge/Theme/app_theme.dart';
 import 'package:scavenge/features/home/view/home_page.dart';
-import 'package:scavenge/provider/theme_provider';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,10 +27,8 @@ class ScavengeApp extends ConsumerWidget {
       home: ref
           .watch(authStateChangesProvider)
           .when(
-            data: (user){
-              if(user == null){
-                
-              }
+            data: (user) {
+              if (user == null) {}
             },
             error: (error, stackTrace) {
               return ErrorScreen(

@@ -17,7 +17,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  @override
+
   @override
   void initState() {
     super.initState();
@@ -30,14 +30,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     _passwordController.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     ref.listen(authControllerProvider, (_, next) {
       if (next is AuthFailure) {}
 
       if (next is AuthSuccess) {}
     });
-
-    return switch (authControllerProvider) {
+    final authState = ref.watch(authControllerProvider);
+    return switch (authState) {
       AuthLoading() => SizedBox(),
       _ => Scaffold(),
     };

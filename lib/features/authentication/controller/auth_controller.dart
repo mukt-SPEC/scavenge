@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:scavenge/core/typedef.dart';
 import 'package:scavenge/features/authentication/model/authstate.dart';
 import 'package:scavenge/features/authentication/service/auth_service.dart';
 
@@ -20,8 +21,19 @@ class AuthController extends StateNotifier<AuthState> {
     state = AuthLoading();
     try {
       await _authService.signIn(email, password);
+      state = AuthSuccess();
     } catch (e) {
       state = AuthFailure(message: e.toString());
+    }
+  }
+
+  Futurevoid signOut() async {
+    state = AuthLoading();
+    try {
+      await _authService.signOut();
+      state = AuthSuccess();
+    } catch (e) {
+     state = AuthFailure(message: e.toString());
     }
   }
 }
