@@ -27,22 +27,36 @@ class AuthTextField extends StatelessWidget {
       children: [
         Text(label),
         TextFormField(
+          cursorColor: Colors.white,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium!.copyWith(color: Colors.white),
           key: formKey,
           maxLines: maxLines ?? 1,
           controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
-            prefixIcon: Icon(prefixIcon),
+            prefixIcon: Icon(prefixIcon, color: Colors.white),
             hintText: placeholder,
-            enabledBorder: OutlineInputBorder(
+            enabledBorder: enabledBorder(),
+            focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: AppColors.white),
+              borderRadius: BorderRadius.circular(12),
             ),
             border: OutlineInputBorder(
               borderSide: BorderSide(color: AppColors.backgroundLight),
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         ),
       ],
+    );
+  }
+
+  OutlineInputBorder enabledBorder() {
+    return OutlineInputBorder(
+      borderSide: BorderSide(color: AppColors.white),
+      borderRadius: BorderRadius.circular(12),
     );
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
 import 'package:scavenge/features/authentication/controller/auth_controller.dart';
 import 'package:scavenge/features/authentication/model/authstate.dart';
+import 'package:scavenge/features/authentication/widget/auth_text_field.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -40,7 +42,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final authState = ref.watch(authControllerProvider);
     return switch (authState) {
       AuthLoading() => SizedBox(),
-      _ => Scaffold(),
+      _ => Scaffold(
+        backgroundColor: AppColors.backgroundDark,
+        body: SafeArea(
+          child: Column(
+            children: [
+              AuthTextField(
+                prefixIcon: MingCuteIcons.mgc_user_3_fill,
+                obscureText: false,
+                placeholder: 'Enter Email',
+                label: 'Email',
+                controller: _emailController,
+              ),
+            ],
+          ),
+        ),
+      ),
     };
   }
 }
