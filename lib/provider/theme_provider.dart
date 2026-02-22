@@ -1,21 +1,27 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemeNotifier extends Notifier<ThemeMode> {
+final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+  throw UnimplementedError('Initialized in main');
+});
+
+class ThemeNotifier extends Notifier<bool> {
+  late SharedPreferences _prefs;
+
   @override
-  ThemeMode build() {
-    return ThemeMode.system;
+  bool build() {
+    _prefs = ref.watch(sharedPreferencesProvider);
+
+    return _prefs.getBool('isDark') ?? true;
   }
 
-  void toggleTheme(bool isDarkMode) {
-    state = isDarkMode ? ThemeMode.dark : ThemeMode.light;
-  }
-
-  void setSystemTheme() {
-    state = ThemeMode.system;
+  void toggleTheme(bool isDark) {
+    _prefs.setBool('isDark', isDark);
+    state = isDark;
   }
 }
 
-final themeProvider = NotifierProvider<ThemeNotifier, ThemeMode>(() {
+// The provider to use in your UI
+final themeProvider = NotifierProvider<ThemeNotifier, bool>(() {
   return ThemeNotifier();
 });

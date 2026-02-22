@@ -8,15 +8,19 @@ class AuthTextField extends StatelessWidget {
   final String placeholder;
   final TextEditingController controller;
   final bool obscureText;
-  final GlobalKey<FormState>? formKey;
+
+  final String? Function(String?)? validator;
+  final void Function(String?)? onsaved;
 
   const AuthTextField({
+    this.onsaved,
+    this.validator,
     this.prefixIcon,
     required this.obscureText,
     required this.placeholder,
     required this.label,
     super.key,
-    this.formKey,
+
     this.maxLines,
     required this.controller,
   });
@@ -26,26 +30,32 @@ class AuthTextField extends StatelessWidget {
     return Column(
       children: [
         Text(label),
-        TextFormField(
-          cursorColor: Colors.white,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium!.copyWith(color: Colors.white),
-          key: formKey,
-          maxLines: maxLines ?? 1,
-          controller: controller,
-          obscureText: obscureText,
-          decoration: InputDecoration(
-            prefixIcon: Icon(prefixIcon, color: Colors.white),
-            hintText: placeholder,
-            enabledBorder: enabledBorder(),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColors.white),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            border: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColors.backgroundLight),
-              borderRadius: BorderRadius.circular(12),
+        SizedBox(
+          height: 30,
+          child: TextFormField(
+            textAlign: TextAlign.center,
+            cursorColor: Colors.white,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium!.copyWith(color: Colors.white),
+
+            validator: validator,
+            onSaved: onsaved,
+            maxLines: maxLines ?? 1,
+            controller: controller,
+            obscureText: obscureText,
+            decoration: InputDecoration(
+              prefixIcon: Icon(prefixIcon, color: Colors.white),
+              hintText: placeholder,
+              enabledBorder: enabledBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColors.white),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColors.backgroundLight),
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
         ),

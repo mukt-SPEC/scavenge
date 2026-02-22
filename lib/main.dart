@@ -4,6 +4,7 @@ import 'package:scavenge/common/error_screen.dart';
 import 'package:scavenge/features/home/view/home_view.dart';
 import 'package:scavenge/provider/providers.dart';
 import 'package:scavenge/provider/theme_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'features/authentication/view/login_page.dart';
 import 'firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,8 +13,14 @@ import 'package:scavenge/features/home/view/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const ProviderScope(child: ScavengeApp()));
+  runApp(
+    ProviderScope(
+      overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+      child: ScavengeApp(),
+    ),
+  );
 }
 
 class ScavengeApp extends ConsumerWidget {
@@ -21,11 +28,12 @@ class ScavengeApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeProvider);
+    final isDark = ref.watch(themeProvider);
     return MaterialApp(
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: themeMode,
+      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+
       home: ref
           .watch(authStateChangesProvider)
           .when(
