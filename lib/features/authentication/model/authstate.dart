@@ -8,9 +8,9 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class AuthFailure extends AuthState {
+class AuthError extends AuthState {
   final String message;
-  AuthFailure({required this.message});
+  AuthError({required this.message});
 }
 
 class AuthSuccess extends AuthState {

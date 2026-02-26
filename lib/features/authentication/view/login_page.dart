@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
-import 'package:scavenge/core/typedef.dart';
 import 'package:scavenge/features/authentication/controller/auth_controller.dart';
 import 'package:scavenge/features/authentication/model/authstate.dart';
 import 'package:scavenge/features/authentication/widget/auth_text_field.dart';
@@ -29,88 +26,111 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   void dispose() {
-    super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    super.dispose();
   }
 
-  bool isLoading = false;
-  Futurevoid _logIn() async {
+  Future<void> _logIn() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
-      });
-
-      try {
-        final String email = _emailController.text.trim();
-        final String password = _passwordController.text.trim();
-
-        await ref.read(authControllerProvider.notifier).signIn(email, password);
-      } on FirebaseAuthException catch (e) {
-        e.code;
-      }
+      final String email = _emailController.text.trim();
+      final String password = _passwordController.text.trim();
+      await ref.read(authControllerProvider.notifier).signIn(email, password);
     }
+  }
+
+  Future<void> _forgotPassword() async {
+    final email = _emailController.text.trim();
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (email.isEmpty || !emailRegex.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter a valid email first.')),
+      );
+      return;
+    }
+    await ref.read(authControllerProvider.notifier).sendPasswordResetEmail(email);
   }
 
   @override
   Widget build(BuildContext context) {
     ref.listen(authControllerProvider, (_, next) {
-      if (next is AuthFailure) {}
-
-      if (next is AuthSuccess) {}
+      if (next is AuthError) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.message)));
+      }
+      if (next is AuthSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Request completed successfully.')),
+        );
+      }
     });
     final authState = ref.watch(authControllerProvider);
-    return switch (authState) {
-      AuthLoading() => SizedBox(),
-      _ => Scaffold(
-        backgroundColor: AppColors.backgroundDark,
-        body: SafeArea(
-          child: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              children: [
-                AuthTextField(
-                  prefixIcon: MingCuteIcons.mgc_user_3_fill,
-                  obscureText: false,
-                  placeholder: 'Enter Email',
-                  label: 'Email',
-                  controller: _emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'please enter an email address';
-                    }
-                    final emailRegex = RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    );
-                    if (!emailRegex.hasMatch(value.trim())) {
-                      return 'Please enter a valid email address';
-                    }
-                    return null;
-                  },
-                ),
-                AuthTextField(
-                  prefixIcon: MingCuteIcons.mgc_lock_fill,
-                  obscureText: true,
-                  placeholder: 'Enter password',
-                  label: 'password',
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 6) {
-                      return 'please enter an email address';
-                    }
-                    final passwordRegex = RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    );
+    final isSubmitting = authState is AuthLoading;
 
-                    return null;
-                  },
-                ),
-              ],
-            ),
+    return Scaffold(
+      backgroundColor: AppColors.backgroundDark,
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            children: [
+              AuthTextField(
+                prefixIcon: MingCuteIcons.mgc_user_3_fill,
+                obscureText: false,
+                placeholder: 'Enter Email',
+                label: 'Email',
+                controller: _emailController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an email address';
+                  }
+                  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                  if (!emailRegex.hasMatch(value.trim())) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null;
+                },
+              ),
+              AuthTextField(
+                prefixIcon: MingCuteIcons.mgc_lock_fill,
+                obscureText: true,
+                placeholder: 'Enter password',
+                label: 'Password',
+                controller: _passwordController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  if (value.length < 8) {
+                    return 'Password must be at least 8 characters';
+                  }
+                  final strongPassword = RegExp(r'^(?=.*[A-Za-z])(?=.*\d).{8,}$');
+                  if (!strongPassword.hasMatch(value)) {
+                    return 'Password must contain letters and numbers';
+                  }
+                  return null;
+                },
+              ),
+              TextButton(
+                onPressed: isSubmitting ? null : _forgotPassword,
+                child: const Text('Forgot password?'),
+              ),
+              ElevatedButton(
+                onPressed: isSubmitting ? null : _logIn,
+                child: isSubmitting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Log in'),
+              ),
+            ],
           ),
         ),
       ),
-    };
+    );
   }
 }

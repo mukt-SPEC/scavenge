@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scavenge/core/exceptions.dart';
 import 'package:scavenge/core/logger.dart';
-import 'package:scavenge/core/typedef.dart';
+import 'package:scavenge/features/authentication/model/auth_failure.dart';
 import 'package:scavenge/provider/providers.dart';
 
 // abstract class InterfaceAuthService{
@@ -34,22 +32,22 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
-          throw 'Please enter a valid email address.';
+          throw const InvalidEmailFailure();
         case 'user-disabled':
-          throw 'This account has been disabled. Please contact support.';
+          throw const UserDisabledFailure();
         case 'user-not-found':
-          throw 'No account found with this email. Please sign up first.';
+          throw const UserNotFoundFailure();
         case 'wrong-password':
-          throw 'Incorrect password. Please try again.';
+          throw const WrongPasswordFailure();
         default:
-          throw 'An error occurred during sign in. Please try again.';
+          throw const UnknownAuthFailure();
       }
     } on SocketException catch (e) {
       AppLogger.error(e.toString());
-      throw NoInternetException();
+      throw const NetworkFailure();
     } catch (e) {
       AppLogger.error(e.toString());
-      throw UnexpectedException();
+      throw const UnknownAuthFailure();
     }
   }
 
@@ -63,23 +61,23 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
-          throw 'This email is already registered. Please sign in instead.';
+          throw const EmailAlreadyInUseFailure();
 
         case 'invalid-email':
-          throw 'Please enter a valid email address.';
+          throw const InvalidEmailFailure();
         case 'operation-not-allowed':
-          throw 'Email/password accounts are not enabled. Please contact support.';
+          throw const OperationNotAllowedFailure();
         case 'weak-password':
-          throw 'The password is too weak. Please use a stronger password.';
+          throw const WeakPasswordFailure();
         default:
-          throw 'An error occurred during sign up. Please try again.';
+          throw const UnknownAuthFailure();
       }
     } on SocketException catch (e) {
       AppLogger.error(e.toString());
-      throw NoInternetException();
+      throw const NetworkFailure();
     } catch (e) {
       AppLogger.error(e.toString());
-      throw UnexpectedException();
+      throw const UnknownAuthFailure();
     }
   }
 
@@ -88,10 +86,10 @@ class AuthService {
       await _firebaseAuth.signOut();
     } on SocketException catch (e) {
       AppLogger.error(e.toString());
-      throw NoInternetException();
+      throw const NetworkFailure();
     } catch (e) {
       AppLogger.error(e.toString());
-      throw UnexpectedException();
+      throw const UnknownAuthFailure();
     }
   }
 
@@ -101,36 +99,50 @@ class AuthService {
       return _firebaseAuth.currentUser!.emailVerified;
     } on SocketException catch (e) {
       AppLogger.error(e.toString());
-      throw NoInternetException();
+      throw const NetworkFailure();
     } catch (e) {
       AppLogger.error(e.toString());
-      throw UnexpectedException();
+      throw const UnknownAuthFailure();
     }
   }
 
   Future<void> resendVerificationEmail() async {
     try {
       await _firebaseAuth.currentUser!.sendEmailVerification();
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-email':
+          throw const InvalidEmailFailure();
+        default:
+          throw const UnknownAuthFailure();
+      }
     } on SocketException catch (e) {
       AppLogger.error(e.toString());
-      throw NoInternetException();
+      throw const NetworkFailure();
     } catch (e) {
       AppLogger.error(e.toString());
-      throw UnexpectedException();
+      throw const UnknownAuthFailure();
     }
   }
 
-  Future<void> sendPasswordResetEmail() async {
+  Future<void> sendPasswordResetEmail(String email) async {
     try {
-      await _firebaseAuth.sendPasswordResetEmail(
-        email: _firebaseAuth.currentUser!.email!,
-      );
+      await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-email':
+          throw const InvalidEmailFailure();
+        case 'user-not-found':
+          throw const UserNotFoundFailure();
+        default:
+          throw const ResetPasswordFailure();
+      }
     } on SocketException catch (e) {
       AppLogger.error(e.toString());
-      throw NoInternetException();
+      throw const NetworkFailure();
     } catch (e) {
       AppLogger.error(e.toString());
-      throw UnexpectedException();
+      throw const UnknownAuthFailure();
     }
   }
 }
