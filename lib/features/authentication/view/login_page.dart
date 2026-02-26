@@ -48,7 +48,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       );
       return;
     }
-    await ref.read(authControllerProvider.notifier).sendPasswordResetEmail(email);
+    await ref
+        .read(authControllerProvider.notifier)
+        .sendPasswordResetEmail(email);
   }
 
   @override
@@ -71,63 +73,72 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            children: [
-              AuthTextField(
-                prefixIcon: MingCuteIcons.mgc_user_3_fill,
-                obscureText: false,
-                placeholder: 'Enter Email',
-                label: 'Email',
-                controller: _emailController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an email address';
-                  }
-                  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                  if (!emailRegex.hasMatch(value.trim())) {
-                    return 'Please enter a valid email address';
-                  }
-                  return null;
-                },
-              ),
-              AuthTextField(
-                prefixIcon: MingCuteIcons.mgc_lock_fill,
-                obscureText: true,
-                placeholder: 'Enter password',
-                label: 'Password',
-                controller: _passwordController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  if (value.length < 8) {
-                    return 'Password must be at least 8 characters';
-                  }
-                  final strongPassword = RegExp(r'^(?=.*[A-Za-z])(?=.*\d).{8,}$');
-                  if (!strongPassword.hasMatch(value)) {
-                    return 'Password must contain letters and numbers';
-                  }
-                  return null;
-                },
-              ),
-              TextButton(
-                onPressed: isSubmitting ? null : _forgotPassword,
-                child: const Text('Forgot password?'),
-              ),
-              ElevatedButton(
-                onPressed: isSubmitting ? null : _logIn,
-                child: isSubmitting
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Log in'),
-              ),
-            ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Form(
+            key: _formKey,
+            //autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              spacing: 16,
+              children: [
+                AuthTextField(
+                  prefixIcon: MingCuteIcons.mgc_user_3_fill,
+                  obscureText: false,
+                  placeholder: 'Enter Email',
+                  label: 'Email',
+                  controller: _emailController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an email address';
+                    }
+                    final emailRegex = RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    );
+                    if (!emailRegex.hasMatch(value.trim())) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+                AuthTextField(
+                  prefixIcon: MingCuteIcons.mgc_lock_fill,
+                  obscureText: true,
+                  enableObscureToggle: true,
+                  placeholder: 'Enter password',
+                  label: 'Password',
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    if (value.length < 8) {
+                      return 'Password must be at least 8 characters';
+                    }
+                    final strongPassword = RegExp(
+                      r'^(?=.*[A-Za-z])(?=.*\d).{8,}$',
+                    );
+                    if (!strongPassword.hasMatch(value)) {
+                      return 'Password must contain letters and numbers';
+                    }
+                    return null;
+                  },
+                ),
+                TextButton(
+                  onPressed: isSubmitting ? null : _forgotPassword,
+                  child: const Text('Forgot password?'),
+                ),
+                ElevatedButton(
+                  onPressed: isSubmitting ? null : _logIn,
+                  child: isSubmitting
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Log in'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
