@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scavenge/common/enums.dart';
 import 'package:scavenge/model/location.dart';
+import 'package:scavenge/model/random.dart';
 
 sealed class UserModel {
   final String id;
   final String name;
   final String email;
+  final UserType role;
   final String phoneNumber;
   final String? profilePicUrl;
   final double walletBalance;
@@ -14,6 +16,7 @@ sealed class UserModel {
   final bool isLiveChatActive;
 
   const UserModel({
+    required this.role,
     required this.id,
     required this.name,
     required this.email,
@@ -26,6 +29,20 @@ sealed class UserModel {
   });
 
   Map<String, dynamic> toMap();
+
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    final userTypeString = map['role'] as String? ?? '';
+
+    final roleEnum = UserType.values.byName(userTypeString);
+
+    if (roleEnum == UserType.customer) {
+      return Customer.fromMap(map);
+    } else if (roleEnum == UserType.agent) {
+      return Agent.fromMap(map);
+    } else {
+      throw Exception('Unknown user role in database');
+    }
+  }
 }
 
 class Customer extends UserModel {
@@ -38,6 +55,7 @@ class Customer extends UserModel {
     required super.name,
     required super.email,
     required super.phoneNumber,
+    super.role = UserType.customer,
     super.profilePicUrl,
     super.walletBalance = 0.0,
     super.fcmToken,
@@ -102,7 +120,7 @@ class Customer extends UserModel {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'role': 'customer',
+      'role': role.name,
       'id': id,
       'name': name,
       'email': email,
@@ -130,6 +148,7 @@ class Agent extends UserModel {
     required super.name,
     required super.email,
     required super.phoneNumber,
+    super.role = UserType.agent,
     super.profilePicUrl,
     super.walletBalance = 0.0,
     super.fcmToken,
@@ -202,7 +221,7 @@ class Agent extends UserModel {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'role': 'agent',
+      'role': role.name,
       'id': id,
       'name': name,
       'email': email,
