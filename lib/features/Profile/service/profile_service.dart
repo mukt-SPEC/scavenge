@@ -28,39 +28,71 @@ class ProfileService {
        _firebaseFirestore = firebaseFirestore,
        super();
 
-  Future<UserModel> createUser(String name, UserType userType) async {
+  // Future<UserModel> createUser(String name, UserType userType) async {
+  //   try {
+  //     final currentUser = _firebaseAuth.currentUser;
+
+  //     if (currentUser == null) {
+  //       throw Exception('an unexpected error occured');
+  //     }
+
+  //     UserModel newUser;
+  //     if (userType == UserType.agent) {
+  //       newUser = Agent(
+  //         id: _firebaseAuth.currentUser!.uid,
+  //         name: name,
+  //         email: _firebaseAuth.currentUser!.email!,
+  //         phoneNumber: '',
+  //       );
+  //     } else {
+  //       newUser = Customer(
+  //         id: _firebaseAuth.currentUser!.uid,
+  //         name: name,
+  //         email: _firebaseAuth.currentUser!.email!,
+  //         phoneNumber: '',
+  //       );
+  //     }
+
+  //     await _firebaseFirestore
+  //         .collection(CollectionPaths.users)
+  //         .doc(currentUser.uid)
+  //         .set(newUser.toMap());
+
+  //     return newUser;
+  //   } catch (e) {
+  //     debugPrint("Error in createUser: $e");
+  //     rethrow;
+  //   }
+  // }
+
+  Future<void> saveUserToDatabase(UserModel user) async {
     try {
       final currentUser = _firebaseAuth.currentUser;
+      if (currentUser == null) throw Exception('No authenticated user found');
 
-      if (currentUser == null) {
-        throw Exception('an unexpected error occured');
-      }
-
-      UserModel newUser;
-      if (userType == UserType.agent) {
-        newUser = Agent(
-          id: _firebaseAuth.currentUser!.uid,
-          name: name,
-          email: _firebaseAuth.currentUser!.email!,
-          phoneNumber: '',
+      // Ensure the user object has the correct UID from Auth
+      UserModel userToSave;
+      if (user is Customer) {
+        userToSave = user.copyWith(
+          id: currentUser.uid,
+          email: currentUser.email,
+        );
+      } else if (user is Agent) {
+        userToSave = user.copyWith(
+          id: currentUser.uid,
+          email: currentUser.email,
         );
       } else {
-        newUser = Customer(
-          id: _firebaseAuth.currentUser!.uid,
-          name: name,
-          email: _firebaseAuth.currentUser!.email!,
-          phoneNumber: '',
-        );
+        throw Exception('Invalid user type');
       }
 
+      // Save to the single 'users' collection
       await _firebaseFirestore
-          .collection(CollectionPaths.users)
+          .collection('users')
           .doc(currentUser.uid)
-          .set(newUser.toMap());
-
-      return newUser;
+          .set(userToSave.toMap());
     } catch (e) {
-      debugPrint("Error in createUser: $e");
+      debugPrint("Error saving user: $e");
       rethrow;
     }
   }
@@ -96,16 +128,36 @@ class ProfileService {
   //   } catch (e) {}
   // }
 
-  Future<UserModel?> fetchUser({String? id, UserType? userType}) async {
+  // Future<UserModel?> fetchUser({String? id, UserType? userType}) async {
+  //     try {
+  //       final qSnap = await _firebaseFirestore
+  //           .collection(CollectionPaths.users)
+  //           .where('id', isEqualTo: id ?? _firebaseAuth.currentUser!.uid)
+  //           .get();
+  //       if (qSnap.docs.isEmpty) return null;
+  //       //return qSnap.docs.map((doc) => UserModel);
+  //     } on SocketException catch (_) {
+  //       throw NoInternetException();
+  //     } catch (e) {}
+  //   }
+  Future<UserModel?> getCurrentUser() async {
     try {
-      final qSnap = await _firebaseFirestore
-          .collection(CollectionPaths.users)
-          .where('id', isEqualTo: id ?? _firebaseAuth.currentUser!.uid)
+      final uid = _firebaseAuth.currentUser?.uid;
+      if (uid == null) return null;
+
+      final docSnapshot = await _firebaseFirestore
+          .collection('users')
+          .doc(uid)
           .get();
-      if (qSnap.docs.isEmpty) return null;
-      //return qSnap.docs.map((doc) => UserModel);
-    } on SocketException catch (_) {
-      throw NoInternetException();
-    } catch (e) {}
+
+      if (docSnapshot.exists && docSnapshot.data() != null) {
+        // Because of Step 1, this automatically returns either an Agent or a Customer!
+        return UserModel.fromMap(docSnapshot.data()!);
+      }
+      return null;
+    } catch (e) {
+      debugPrint("Error fetching user: $e");
+      return null;
+    }
   }
 }
