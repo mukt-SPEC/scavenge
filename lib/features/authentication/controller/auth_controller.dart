@@ -26,7 +26,7 @@ class AuthController extends StateNotifier<AuthState> {
     state = AuthLoading();
     try {
       await _authService.signIn(email, password);
-      final user = await _ref.read(profileServiceProvider);
+      final user = await _ref.read(profileServiceProvider).getCurrentUser();
       state = AuthSuccess(user: user);
     } on AuthFailure catch (failure) {
       state = AuthError(message: failure.message);
