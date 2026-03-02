@@ -31,6 +31,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
+  Future<void> _signUp() async {
+    if (_formKey.currentState!.validate()) {
+      final String email = _emailController.text.trim();
+      final String password = _passwordController.text.trim();
+      await ref.read(authControllerProvider.notifier).signUp(email, password);
+    }
+  }
+
   Future<void> _logIn() async {
     if (_formKey.currentState!.validate()) {
       final String email = _emailController.text.trim();
@@ -128,7 +136,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   child: const Text('Forgot password?'),
                 ),
                 ElevatedButton(
-                  onPressed: isSubmitting ? null : _logIn,
+                  onPressed: isSubmitting ? null : _signUp,
                   child: isSubmitting
                       ? const SizedBox(
                           width: 18,
