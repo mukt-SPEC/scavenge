@@ -4,6 +4,7 @@ import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
 import 'package:scavenge/features/authentication/controller/auth_controller.dart';
 import 'package:scavenge/features/authentication/model/authstate.dart';
+import 'package:scavenge/features/authentication/widget/Display_sncakBar.dart';
 import 'package:scavenge/features/authentication/widget/auth_text_field.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -65,9 +66,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     ref.listen(authControllerProvider, (_, next) {
       if (next is AuthError) {
-        ScaffoldMessenger.of(
+        displaySnackBar(
           context,
-        ).showSnackBar(SnackBar(content: Text(next.message)));
+          next.message,
+          isError: true,
+          onDisplaycomplete: () => ref.invalidate(authControllerProvider),
+        );
       }
       if (next is AuthSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -96,11 +96,11 @@ class _AuthTextFieldState extends State<AuthTextField> {
             enabledBorder: enabledBorder(),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: AppColors.white),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(20),
             ),
             border: OutlineInputBorder(
               borderSide: BorderSide(color: AppColors.backgroundLight),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
         ),
@@ -111,7 +111,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
   OutlineInputBorder enabledBorder() {
     return OutlineInputBorder(
       borderSide: BorderSide(color: AppColors.white),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(20),
     );
   }
 }

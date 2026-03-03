@@ -28,7 +28,7 @@ class HomePageHeader extends StatelessWidget {
             ),
           ],
         ),
-        // Image.asset(AppImages.earth, width: 96, height: 96),
+        Image.asset(AppImages.earth, width: 96, height: 96),
       ],
     );
   }
