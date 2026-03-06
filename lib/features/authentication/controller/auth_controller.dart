@@ -15,10 +15,12 @@ final authControllerProvider = StateNotifierProvider<AuthController, AuthState>(
 
 class AuthController extends StateNotifier<AuthState> {
   final AuthService _authService;
+
   final Ref _ref;
 
   AuthController({required AuthService authservice, required Ref ref})
     : _authService = authservice,
+
       _ref = ref,
       super(AuthInitial());
 

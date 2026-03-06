@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ming_cute_icons/ming_cute_icons.dart';
 
 class QuickAction extends StatelessWidget {
   final IconData icon;
@@ -27,7 +28,16 @@ class QuickAction extends StatelessWidget {
         spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: iconColor, size: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(icon, color: iconColor, size: 24),
+              Icon(
+                MingCuteIcons.mgc_arrow_right_up_fill,
+                color: Color(0xffb9b9b9),
+              ),
+            ],
+          ),
           Text(
             text,
             style: Theme.of(

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scavenge/common/enums.dart';
 import 'package:scavenge/core/collection_path.dart';
 import 'package:scavenge/core/exceptions.dart';
+import 'package:scavenge/core/typedef.dart';
 import 'package:scavenge/model/user.dart';
 import 'package:scavenge/provider/providers.dart';
 
@@ -97,6 +98,11 @@ class ProfileService {
     }
   }
 
+  Future<User?> currentUser() async {
+    final currentUser = _firebaseAuth.currentUser;
+    return currentUser;
+  }
+
   // Future<UserModel?> saveUser({UserModel? userModel}) async {
   //   try {
   //     final currentUser = _firebaseAuth.currentUser;
@@ -151,7 +157,6 @@ class ProfileService {
           .get();
 
       if (docSnapshot.exists && docSnapshot.data() != null) {
-        // Because of Step 1, this automatically returns either an Agent or a Customer!
         return UserModel.fromMap(docSnapshot.data()!);
       }
       return null;
