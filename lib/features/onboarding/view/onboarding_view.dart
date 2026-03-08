@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
 import 'package:scavenge/common/app_button.dart';
+import 'package:scavenge/common/enums.dart';
+import 'package:scavenge/features/authentication/view/login_page.dart';
 import 'package:scavenge/features/home/widget/header.dart';
 import 'package:scavenge/features/home/widget/quick_actions.dart';
+import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
 
 class OnboardingView extends ConsumerStatefulWidget {
   //final UserModel userModel;
@@ -15,14 +18,6 @@ class OnboardingView extends ConsumerStatefulWidget {
 }
 
 class _OnboardingViewState extends ConsumerState<OnboardingView> {
-  int? _selectedOption;
-
-  void _selectOption(int optionIndex) {
-    setState(() {
-      _selectedOption = optionIndex;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,9 +70,13 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                   children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: () => _selectOption(1),
+                        onTap: () => ref
+                            .read(onboardingProvider.notifier)
+                            .setUserType(UserType.agent),
                         child: QuickAction(
-                          backgroundColor: _selectedOption == 1
+                          backgroundColor:
+                              ref.watch(onboardingProvider).userType ==
+                                  UserType.agent
                               ? Color(0xff0234b3)
                               : AppColors.cardDark,
                           icon: MingCuteIcons.mgc_IDcard_fill,
@@ -87,9 +86,13 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                     ),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () => _selectOption(2),
+                        onTap: () => ref
+                            .read(onboardingProvider.notifier)
+                            .setUserType(UserType.customer),
                         child: QuickAction(
-                          backgroundColor: _selectedOption == 2
+                          backgroundColor:
+                              ref.watch(onboardingProvider).userType ==
+                                  UserType.customer
                               ? Color(0xff008000)
                               : AppColors.cardDark,
                           icon: MingCuteIcons.mgc_group_3_fill,
@@ -101,7 +104,16 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 ),
                 SizedBox(height: 8),
                 AppButton(
-                  onPressed: _selectedOption == 1 ? () {} : null,
+                  onPressed: ref.watch(onboardingProvider).userType != null
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const LoginPage(),
+                            ),
+                          );
+                        }
+                      : null,
                   buttonText: 'Get Started',
                 ),
                 SizedBox(height: 64),

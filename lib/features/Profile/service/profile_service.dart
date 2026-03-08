@@ -1,15 +1,11 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scavenge/common/enums.dart';
-import 'package:scavenge/core/collection_path.dart';
-import 'package:scavenge/core/exceptions.dart';
-import 'package:scavenge/core/typedef.dart';
 import 'package:scavenge/model/user.dart';
 import 'package:scavenge/provider/providers.dart';
+import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
 
 final profileServiceProvider = Provider((ref) {
   return ProfileService(
@@ -29,42 +25,40 @@ class ProfileService {
        _firebaseFirestore = firebaseFirestore,
        super();
 
-  // Future<UserModel> createUser(String name, UserType userType) async {
-  //   try {
-  //     final currentUser = _firebaseAuth.currentUser;
+  Future<UserModel> saveUserFromOnboarding(OnboardingState state) async {
+    try {
+      final currentUser = _firebaseAuth.currentUser;
+      if (currentUser == null) throw Exception('No authenticated user found');
+      if (state.userType == null) throw Exception('UserType is not selected');
 
-  //     if (currentUser == null) {
-  //       throw Exception('an unexpected error occured');
-  //     }
+      UserModel userToSave;
+      if (state.userType == UserType.customer) {
+        userToSave = Customer(
+          id: currentUser.uid,
+          name: state.name ?? '',
+          email: currentUser.email ?? '',
+          phoneNumber: state.phoneNumber ?? '',
+          preferredWasteTypes: state.preferredWasteTypes ?? [],
+        );
+      } else if (state.userType == UserType.agent) {
+        userToSave = Agent(
+          id: currentUser.uid,
+          name: state.name ?? '',
+          email: currentUser.email ?? '',
+          phoneNumber: state.phoneNumber ?? '',
+          vehicleLicensePlate: state.vehicleLicensePlate,
+        );
+      } else {
+        throw Exception('Invalid user type');
+      }
 
-  //     UserModel newUser;
-  //     if (userType == UserType.agent) {
-  //       newUser = Agent(
-  //         id: _firebaseAuth.currentUser!.uid,
-  //         name: name,
-  //         email: _firebaseAuth.currentUser!.email!,
-  //         phoneNumber: '',
-  //       );
-  //     } else {
-  //       newUser = Customer(
-  //         id: _firebaseAuth.currentUser!.uid,
-  //         name: name,
-  //         email: _firebaseAuth.currentUser!.email!,
-  //         phoneNumber: '',
-  //       );
-  //     }
-
-  //     await _firebaseFirestore
-  //         .collection(CollectionPaths.users)
-  //         .doc(currentUser.uid)
-  //         .set(newUser.toMap());
-
-  //     return newUser;
-  //   } catch (e) {
-  //     debugPrint("Error in createUser: $e");
-  //     rethrow;
-  //   }
-  // }
+      await saveUserToDatabase(userToSave);
+      return userToSave;
+    } catch (e) {
+      debugPrint("Error creating user from onboarding: $e");
+      rethrow;
+    }
+  }
 
   Future<void> saveUserToDatabase(UserModel user) async {
     try {
