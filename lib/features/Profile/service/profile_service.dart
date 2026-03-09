@@ -65,7 +65,7 @@ class ProfileService {
       final currentUser = _firebaseAuth.currentUser;
       if (currentUser == null) throw Exception('No authenticated user found');
 
-      // Ensure the user object has the correct UID from Auth
+    
       UserModel userToSave;
       if (user is Customer) {
         userToSave = user.copyWith(
@@ -81,7 +81,7 @@ class ProfileService {
         throw Exception('Invalid user type');
       }
 
-      // Save to the single 'users' collection
+      
       await _firebaseFirestore
           .collection('users')
           .doc(currentUser.uid)

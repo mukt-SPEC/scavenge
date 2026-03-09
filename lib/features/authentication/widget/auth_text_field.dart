@@ -60,13 +60,13 @@ class _AuthTextFieldState extends State<AuthTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(widget.label),
+        Text(widget.label, style: Theme.of(context).textTheme.bodySmall),
         TextFormField(
           //textAlign: TextAlign.center,
           cursorColor: Colors.white,
           style: Theme.of(
             context,
-          ).textTheme.bodyMedium!.copyWith(color: Colors.white),
+          ).textTheme.labelLarge!.copyWith(color: Colors.white),
 
           validator: widget.validator,
           onSaved: widget.onsaved,
@@ -74,7 +74,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
           controller: widget.controller,
           obscureText: canToggleObscure ? _isObscured : widget.obscureText,
           decoration: InputDecoration(
-            prefixIcon: Icon(widget.prefixIcon, color: Colors.white),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            //  prefixIcon: Icon(widget.prefixIcon, color: Colors.white) ,
             suffixIcon: canToggleObscure
                 ? IconButton(
                     onPressed: () {
@@ -93,14 +94,17 @@ class _AuthTextFieldState extends State<AuthTextField> {
                       ? null
                       : Icon(widget.suffixIcon, color: Colors.white)),
             hintText: widget.placeholder,
+            hintStyle: Theme.of(
+              context,
+            ).textTheme.labelLarge!.copyWith(color: Color(0xffb9b9b9)),
             enabledBorder: enabledBorder(),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: AppColors.white),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
             ),
             border: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColors.backgroundLight),
-              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide(color: AppColors.cardDark),
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         ),
@@ -110,8 +114,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
 
   OutlineInputBorder enabledBorder() {
     return OutlineInputBorder(
-      borderSide: BorderSide(color: AppColors.white),
-      borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide(color: AppColors.cardDark),
+      borderRadius: BorderRadius.circular(12),
     );
   }
 }

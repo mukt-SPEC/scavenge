@@ -8,6 +8,7 @@ import 'package:scavenge/features/authentication/view/login_page.dart';
 import 'package:scavenge/features/home/widget/header.dart';
 import 'package:scavenge/features/home/widget/quick_actions.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
+import 'package:scavenge/features/onboarding/view/basic_info_page.dart';
 
 class OnboardingView extends ConsumerStatefulWidget {
   //final UserModel userModel;
@@ -37,7 +38,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/Bin.png'),
+                    image: AssetImage('assets/images/agent.png'),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                       Colors.black.withValues(alpha: 0.2),
@@ -109,7 +110,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const LoginPage(),
+                              builder: (_) => const BasicInfoPage(),
                             ),
                           );
                         }
