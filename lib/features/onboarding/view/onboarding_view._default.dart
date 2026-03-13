@@ -4,7 +4,7 @@ import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
 import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/common/enums.dart';
-import 'package:scavenge/features/authentication/view/login_page.dart';
+import 'package:scavenge/features/authentication/view/auth_page.dart';
 import 'package:scavenge/features/home/widget/header.dart';
 import 'package:scavenge/features/home/widget/quick_actions.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
@@ -38,7 +38,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/agent.png'),
+                    image: AssetImage('assets/images/Bin.png'),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                       Colors.black.withValues(alpha: 0.2),
@@ -117,7 +117,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                       : null,
                   buttonText: 'Get Started',
                 ),
-                SizedBox(height: 64),
+                SizedBox(height: 40),
               ],
             ),
           ],

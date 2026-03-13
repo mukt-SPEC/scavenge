@@ -4,6 +4,7 @@ import 'package:scavenge/Theme/app_colors.dart';
 
 class AuthTextField extends StatefulWidget {
   final int? maxLines;
+  final TextInputType? keyboardType;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final String label;
@@ -13,12 +14,13 @@ class AuthTextField extends StatefulWidget {
   final bool enableObscureToggle;
 
   final String? Function(String?)? validator;
-  final void Function(String?)? onsaved;
+  final void Function(String?)? onSaved;
 
   const AuthTextField({
+    this.keyboardType,
     this.enableObscureToggle = false,
     this.suffixIcon,
-    this.onsaved,
+    this.onSaved,
     this.validator,
     this.prefixIcon,
     required this.obscureText,
@@ -62,6 +64,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
       children: [
         Text(widget.label, style: Theme.of(context).textTheme.bodySmall),
         TextFormField(
+          keyboardType: widget.keyboardType,
           //textAlign: TextAlign.center,
           cursorColor: Colors.white,
           style: Theme.of(
@@ -69,7 +72,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
           ).textTheme.labelLarge!.copyWith(color: Colors.white),
 
           validator: widget.validator,
-          onSaved: widget.onsaved,
+          onSaved: widget.onSaved,
           maxLines: widget.maxLines ?? 1,
           controller: widget.controller,
           obscureText: canToggleObscure ? _isObscured : widget.obscureText,

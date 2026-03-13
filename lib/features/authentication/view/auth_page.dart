@@ -7,14 +7,14 @@ import 'package:scavenge/features/authentication/model/authstate.dart';
 import 'package:scavenge/features/authentication/widget/Display_sncakBar.dart';
 import 'package:scavenge/features/authentication/widget/auth_text_field.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
-  const LoginPage({super.key});
+class AuthPage extends ConsumerStatefulWidget {
+  const AuthPage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _LoginPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _AuthPageState();
 }
 
-class _LoginPageState extends ConsumerState<LoginPage> {
+class _AuthPageState extends ConsumerState<AuthPage> {
   bool isSignIn = true;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
