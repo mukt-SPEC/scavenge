@@ -33,6 +33,11 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
 
       ref.read(onboardingProvider.notifier).setName(name);
       ref.read(onboardingProvider.notifier).setPhoneNumber(phoneNumber);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const LocationSelectPage()),
+      );
     }
   }
 
@@ -47,31 +52,27 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
           padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
           child: Column(
             spacing: 24,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+
             children: [
               Column(
                 spacing: 24,
 
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(24),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: AppColors.cardDark,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
+                  Column(
+                    children: [
+                      Align(
+                        alignment: AlignmentGeometry.centerLeft,
+                        child: Text(
                           onboardingstate.userType == UserType.customer
                               ? 'Customer'
                               : 'Agent',
-                          style: Theme.of(context).textTheme.headlineMedium,
+                          textAlign: TextAlign.left,
+
+                          style: Theme.of(context).textTheme.displayLarge!
+                              .copyWith(color: AppColors.white),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   Form(
                     key: _formKey,
@@ -89,6 +90,11 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
                             }
                             return null;
                           },
+                          onSaved: (value) {
+                            setState(() {
+                              nameController.text = value!;
+                            });
+                          },
                         ),
                         AuthTextField(
                           obscureText: false,
@@ -105,6 +111,11 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
                             }
                             return null;
                           },
+                          onSaved: (value) {
+                            setState(() {
+                              phoneNumberController.text = value!;
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -113,15 +124,14 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
               ),
               Spacer(),
               AppButton(
-                onPressed: () {
-                  setNameAndPassword();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const LocationSelectPage(),
-                    ),
-                  );
-                },
+                onPressed:
+                    nameController.text.isNotEmpty &&
+                        phoneNumberController.text.isNotEmpty
+                    ? () {
+                        setNameAndPassword();
+                      }
+                    : null,
+
                 buttonText: 'Proceed',
               ),
               SizedBox(height: 0),
