@@ -20,9 +20,22 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    nameController.addListener(_updateState);
+    phoneNumberController.addListener(_updateState);
+  }
+
+  void _updateState() {
+    setState(() {});
+  }
+
+  @override
   void dispose() {
-    nameController.dispose;
-    phoneNumberController.dispose;
+    nameController.removeListener(_updateState);
+    phoneNumberController.removeListener(_updateState);
+    nameController.dispose();
+    phoneNumberController.dispose();
     super.dispose();
   }
 
@@ -125,13 +138,12 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
               Spacer(),
               AppButton(
                 onPressed:
-                    nameController.text.isNotEmpty &&
-                        phoneNumberController.text.isNotEmpty
+                    nameController.text.trim().isNotEmpty &&
+                        phoneNumberController.text.trim().isNotEmpty
                     ? () {
                         setNameAndPassword();
                       }
                     : null,
-
                 buttonText: 'Proceed',
               ),
               SizedBox(height: 0),

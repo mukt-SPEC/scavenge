@@ -38,7 +38,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/Bin.png'),
+                    image: AssetImage('assets/images/agent.png'),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                       Colors.black.withValues(alpha: 0.2),
