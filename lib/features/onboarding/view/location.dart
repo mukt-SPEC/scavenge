@@ -66,7 +66,10 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
   Widget build(BuildContext context) {
     final onboardingState = ref.read(onboardingProvider);
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         actions: [
           GestureDetector(
             onTap: () {
@@ -88,38 +91,37 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
           SizedBox(width: 16),
         ],
       ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(initialZoom: 2, initialCenter: LatLng(0, 0)),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                ),
-                CurrentLocationLayer(
-                  style: LocationMarkerStyle(
-                    marker: DefaultLocationMarker(
-                      child: Icon(Icons.location_city),
-                    ),
-                    markerSize: Size(32, 32),
+      body: Stack(
+        children: [
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(initialZoom: 2, initialCenter: LatLng(0, 0)),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openfreemap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.scavenge',
+              ),
+              CurrentLocationLayer(
+                style: LocationMarkerStyle(
+                  marker: DefaultLocationMarker(
+                    child: Icon(Icons.location_city),
                   ),
+                  markerSize: Size(32, 32),
                 ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                Spacer(),
+                AppButton(onPressed: () {}, buttonText: 'Choose location'),
+                SizedBox(height: 24),
               ],
             ),
-            Padding(
-              padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Spacer(),
-                  AppButton(onPressed: () {}, buttonText: 'Choose location'),
-                  SizedBox(height: 24),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
