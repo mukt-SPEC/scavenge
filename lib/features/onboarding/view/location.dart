@@ -4,7 +4,6 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:scavenge/Theme/app_colors.dart';
 import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/common/enums.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
@@ -19,6 +18,12 @@ class LocationSelectPage extends ConsumerStatefulWidget {
 }
 
 class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
+  @override
+  void initState() {
+    super.initState();
+    _determinePosition();
+  }
+
   /// Determine the current position of the device.
   ///
   /// When the location services are not enabled or permissions
@@ -64,7 +69,7 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
   final _mapController = MapController();
   @override
   Widget build(BuildContext context) {
-    final onboardingState = ref.read(onboardingProvider);
+    final onboardingState = ref.watch(onboardingProvider);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -95,10 +100,12 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
         children: [
           FlutterMap(
             mapController: _mapController,
-            options: MapOptions(initialZoom: 2, initialCenter: LatLng(0, 0)),
+            options: MapOptions(initialZoom: 8, initialCenter: LatLng(0, 0)),
             children: [
               TileLayer(
-                urlTemplate: 'https://tile.openfreemap.org/{z}/{x}/{y}.png',
+                urlTemplate:
+                    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+
                 userAgentPackageName: 'com.example.scavenge',
               ),
               CurrentLocationLayer(

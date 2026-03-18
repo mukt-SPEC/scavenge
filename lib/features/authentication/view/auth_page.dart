@@ -65,6 +65,8 @@ class _AuthPageState extends ConsumerState<AuthPage> {
   @override
   Widget build(BuildContext context) {
     ref.listen(authControllerProvider, (_, next) {
+      if (!context.mounted) return;
+      
       if (next is AuthError) {
         displaySnackBar(
           context,

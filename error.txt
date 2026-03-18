@@ -1,0 +1,6 @@
+Analyzing location.dart...
+
+warning - location.dart:7:8 - Unused import: 'package:scavenge/Theme/app_colors.dart'. Try removing the import directive. - unused_import
+warning - location.dart:26:20 - The declaration '_determinePosition' isn't referenced. Try removing the declaration of '_determinePosition'. - unused_element
+
+2 issues found.
