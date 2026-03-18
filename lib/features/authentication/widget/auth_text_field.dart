@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
 
@@ -12,11 +13,13 @@ class AuthTextField extends StatefulWidget {
   final TextEditingController controller;
   final bool obscureText;
   final bool enableObscureToggle;
+  final List<TextInputFormatter>? inputFormatters;
 
   final String? Function(String?)? validator;
   final void Function(String?)? onSaved;
 
   const AuthTextField({
+    this.inputFormatters,
     this.keyboardType,
     this.enableObscureToggle = false,
     this.suffixIcon,
@@ -64,6 +67,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
       children: [
         Text(widget.label, style: Theme.of(context).textTheme.bodySmall),
         TextFormField(
+          inputFormatters: widget.inputFormatters,
           keyboardType: widget.keyboardType,
           //textAlign: TextAlign.center,
           cursorColor: Colors.white,

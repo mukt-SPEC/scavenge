@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scavenge/Theme/app_colors.dart';
 import 'package:scavenge/common/app_button.dart';
@@ -6,6 +7,8 @@ import 'package:scavenge/common/enums.dart';
 import 'package:scavenge/features/authentication/widget/auth_text_field.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
 import 'package:scavenge/features/onboarding/view/location.dart';
+import 'package:scavenge/utils/formatter.dart';
+import 'package:scavenge/utils/validator.dart';
 
 class BasicInfoPage extends ConsumerStatefulWidget {
   const BasicInfoPage({super.key});
@@ -97,12 +100,8 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
                           placeholder: 'Enter name',
                           label: 'What should we call you',
                           controller: nameController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'please enter a name';
-                            }
-                            return null;
-                          },
+                          validator: (value) =>
+                              Validators.validateFullName(value),
                           onSaved: (value) {
                             setState(() {
                               nameController.text = value!;
@@ -115,15 +114,9 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
                           label: 'Enter Phone number',
                           keyboardType: TextInputType.numberWithOptions(),
                           controller: phoneNumberController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'please enter a phone number';
-                            }
-                            if (value.length != 11) {
-                              return 'please enter a valid phone number';
-                            }
-                            return null;
-                          },
+                          validator: (value) =>
+                              Validators.validateNigerianPhoneNumber(value),
+                          inputFormatters: [NigerianPhoneFormatter()],
                           onSaved: (value) {
                             setState(() {
                               phoneNumberController.text = value!;
