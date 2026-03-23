@@ -116,7 +116,7 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
                           controller: phoneNumberController,
                           validator: (value) =>
                               Validators.validateNigerianPhoneNumber(value),
-                          inputFormatters: [NigerianPhoneFormatter()],
+
                           onSaved: (value) {
                             setState(() {
                               phoneNumberController.text = value!;

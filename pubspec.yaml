@@ -46,6 +46,7 @@ dependencies:
   icons_plus: ^5.0.0
   image_picker: ^1.2.1
   latlong2: ^0.9.1
+  location: ^8.0.1
   ming_cute_icons: ^0.0.7
   shared_preferences: ^2.5.4
 

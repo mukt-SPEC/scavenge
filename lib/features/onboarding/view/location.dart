@@ -1,11 +1,17 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
+import 'package:ming_cute_icons/ming_cute_icons.dart';
+import 'package:scavenge/Theme/app_colors.dart';
 import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/common/enums.dart';
+import 'package:scavenge/core/typedef.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
 import 'package:scavenge/features/onboarding/view/preferred_waste.dart';
 
@@ -21,13 +27,79 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
   @override
   void initState() {
     super.initState();
-    _determinePosition();
+    _determinePosition()
+        .then((pos) {
+          if (mounted) {
+            setState(() {
+              _currentLocation = LatLng(pos.latitude, pos.longitude);
+            });
+            _mapController.move(_currentLocation!, 15);
+
+            // Start listening to live location updates
+            _locationSubscription = _location.onLocationChanged.listen((
+              LocationData currentLocation,
+            ) {
+              if (currentLocation.latitude != null &&
+                  currentLocation.longitude != null) {
+                if (mounted) {
+                  setState(() {
+                    _currentLocation = LatLng(
+                      currentLocation.latitude!,
+                      currentLocation.longitude!,
+                    );
+                  });
+                  _mapController.move(
+                    _currentLocation!,
+                    _mapController.camera.zoom,
+                  );
+                }
+              }
+            });
+          }
+        })
+        .catchError((e) {
+          debugPrint("Error getting location: $e");
+        });
   }
 
-  /// Determine the current position of the device.
-  ///
-  /// When the location services are not enabled or permissions
-  /// are denied the `Future` will return an error.
+  @override
+  void dispose() {
+    _locationSubscription?.cancel();
+    super.dispose();
+  }
+
+  LatLng? _currentLocation;
+  final _location = Location();
+  StreamSubscription<LocationData>? _locationSubscription;
+
+  Futurevoid _usercurrentLocation() async {
+    if (_currentLocation != null) {
+      _mapController.move(_currentLocation!, 15);
+    } else {
+      try {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Fetching location...')));
+        }
+        final pos = await _determinePosition();
+        if (mounted) {
+          setState(() {
+            _currentLocation = LatLng(pos.latitude, pos.longitude);
+          });
+          _mapController.move(_currentLocation!, 15);
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('$e')));
+        }
+      }
+    }
+  }
+
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -98,33 +170,59 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
       ),
       body: Stack(
         children: [
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(initialZoom: 8, initialCenter: LatLng(0, 0)),
-            children: [
-              TileLayer(
-                urlTemplate:
-                    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-
-                userAgentPackageName: 'com.example.scavenge',
+          Positioned.fill(
+            child: FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialZoom: 8,
+                initialCenter: _currentLocation ?? const LatLng(0, 0),
               ),
-              CurrentLocationLayer(
-                style: LocationMarkerStyle(
-                  marker: DefaultLocationMarker(
-                    child: Icon(Icons.location_city),
-                  ),
-                  markerSize: Size(32, 32),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.example.scavenge',
                 ),
-              ),
-            ],
+                CurrentLocationLayer(
+                  style: LocationMarkerStyle(
+                    marker: DefaultLocationMarker(
+                      child: Icon(Icons.location_city),
+                    ),
+                    markerSize: Size(32, 32),
+                  ),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
             child: Column(
               children: [
                 Spacer(),
-                AppButton(onPressed: () {}, buttonText: 'Choose location'),
-                SizedBox(height: 24),
+                Row(
+                  spacing: 8,
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        onPressed: () {},
+                        buttonText: 'Choose location',
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        fixedSize: Size(44, 44),
+                        backgroundColor: AppColors.white,
+                        foregroundColor: AppColors.surfaceDark,
+                      ),
+                      onPressed: () {
+                        _usercurrentLocation();
+                      },
+                      child: Icon(MingCuteIcons.mgc_pin_2_fill),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 48),
               ],
             ),
           ),

@@ -179,4 +179,8 @@ class Validators {
 
     return phoneNumber.replaceAll(RegExp(r'[\s\-\(\)]'), '');
   }
+
+  static String stripFormatting(String value) {
+    return value.replaceAll(RegExp(r'[\s\-\(\)]'), '');
+  }
 }
