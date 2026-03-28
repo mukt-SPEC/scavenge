@@ -9,6 +9,7 @@ class OnboardingState {
   final String? vehicleLicensePlate;
   final List<WasteType>? preferredWasteTypes;
   final Location? userLocation;
+  final AgentType? agentType;
 
   OnboardingState({
     this.userType,
@@ -17,6 +18,7 @@ class OnboardingState {
     this.vehicleLicensePlate,
     this.preferredWasteTypes,
     this.userLocation,
+    this.agentType,
   });
 
   OnboardingState copyWith({
@@ -26,6 +28,7 @@ class OnboardingState {
     String? vehicleLicensePlate,
     List<WasteType>? preferredWasteTypes,
     Location? userLocation,
+    AgentType? agentType,
   }) {
     return OnboardingState(
       userType: userType ?? this.userType,
@@ -34,6 +37,7 @@ class OnboardingState {
       vehicleLicensePlate: vehicleLicensePlate ?? this.vehicleLicensePlate,
       preferredWasteTypes: preferredWasteTypes ?? this.preferredWasteTypes,
       userLocation: userLocation ?? this.userLocation,
+      agentType: agentType ?? this.agentType,
     );
   }
 }
@@ -60,6 +64,10 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
 
   void setLocation(Location location) {
     state = state.copyWith(userLocation: location);
+  }
+
+  void setAgentType(AgentType type) {
+    state = state.copyWith(agentType: type);
   }
 
   void setPreferredWasteTypes(List<WasteType> wasteTypes) {

@@ -103,7 +103,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 24),
                 AppButton(
                   onPressed: ref.watch(onboardingProvider).userType != null
                       ? () {

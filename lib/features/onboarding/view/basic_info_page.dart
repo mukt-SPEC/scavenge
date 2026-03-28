@@ -6,6 +6,7 @@ import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/common/enums.dart';
 import 'package:scavenge/features/authentication/widget/auth_text_field.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
+import 'package:scavenge/features/onboarding/view/agent_type.dart';
 import 'package:scavenge/features/onboarding/view/location_view.dart';
 import 'package:scavenge/utils/formatter.dart';
 import 'package:scavenge/utils/validator.dart';
@@ -52,7 +53,7 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const LocationSelectPage()),
+        MaterialPageRoute(builder: (_) => const AgentTypeView()),
       );
     }
   }

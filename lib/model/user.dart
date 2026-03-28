@@ -141,6 +141,7 @@ class Agent extends UserModel {
   final double rating;
   final int completedPickups;
   final String? vehicleLicensePlate;
+  final AgentType agentType;
 
   const Agent({
     required super.id,
@@ -158,6 +159,7 @@ class Agent extends UserModel {
     this.rating = 0.0,
     this.completedPickups = 0,
     this.vehicleLicensePlate,
+    this.agentType = AgentType.mobile,
   });
 
   Agent copyWith({
@@ -175,6 +177,7 @@ class Agent extends UserModel {
     double? rating,
     int? completedPickups,
     String? vehicleLicensePlate,
+    AgentType? agentType,
   }) {
     return Agent(
       id: id ?? this.id,
@@ -191,6 +194,7 @@ class Agent extends UserModel {
       rating: rating ?? this.rating,
       completedPickups: completedPickups ?? this.completedPickups,
       vehicleLicensePlate: vehicleLicensePlate ?? this.vehicleLicensePlate,
+      agentType: agentType ?? this.agentType,
     );
   }
 
@@ -214,6 +218,7 @@ class Agent extends UserModel {
               ?.map((e) => WasteType.values.byName(e))
               .toList() ??
           WasteType.values,
+      agentType: AgentType.values.byName(map['agentType'] ?? 'mobile'),
     );
   }
 
@@ -235,6 +240,7 @@ class Agent extends UserModel {
       'completedPickups': completedPickups,
       'vehicleLicensePlate': vehicleLicensePlate,
       'acceptedWasteTypes': acceptedWasteTypes.map((e) => e.name).toList(),
+      'agentType': agentType.name,
     };
   }
 }

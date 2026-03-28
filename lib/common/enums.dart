@@ -11,3 +11,11 @@ enum WasteType {
 enum TransactionType { recycle, trade }
 
 enum UserType { agent, customer }
+
+enum AgentType {
+  mobile('Mobile'),
+  dropZone('Drop Zone');
+
+  final String label;
+  const AgentType(this.label);
+}
