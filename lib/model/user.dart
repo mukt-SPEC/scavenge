@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scavenge/common/enums.dart';
 import 'package:scavenge/model/location.dart';
-import 'package:scavenge/model/random.dart';
 
 sealed class UserModel {
   final String id;

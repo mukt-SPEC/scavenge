@@ -11,9 +11,9 @@ import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
 import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/common/enums.dart';
-import 'package:scavenge/core/typedef.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
 import 'package:scavenge/features/onboarding/view/preferred_waste.dart';
+import 'package:scavenge/model/location.dart' as app_model;
 
 class LocationSelectPage extends ConsumerStatefulWidget {
   const LocationSelectPage({super.key});
@@ -72,7 +72,20 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
   final _location = Location();
   StreamSubscription<LocationData>? _locationSubscription;
 
-  Futurevoid _usercurrentLocation() async {
+  void saveLocation() {
+    if (_currentLocation != null) {
+      ref
+          .read(onboardingProvider.notifier)
+          .setLocation(
+            app_model.Location(
+              latitude: _currentLocation!.latitude,
+              longitude: _currentLocation!.longitude,
+            ),
+          );
+    }
+  }
+
+  Future<void> _usercurrentLocation() async {
     if (_currentLocation != null) {
       _mapController.move(_currentLocation!, 15);
     } else {
@@ -185,7 +198,7 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
                 CurrentLocationLayer(
                   style: LocationMarkerStyle(
                     marker: DefaultLocationMarker(
-                      child: Icon(Icons.location_city),
+                      child: Icon(MingCuteIcons.mgc_user_2_fill),
                     ),
                     markerSize: Size(32, 32),
                   ),
@@ -203,7 +216,18 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
                   children: [
                     Expanded(
                       child: AppButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          saveLocation();
+                          if (onboardingState.userType == UserType.agent) {
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const PreferredWaste(),
+                              ),
+                            );
+                          }
+                        },
                         buttonText: 'Choose location',
                       ),
                     ),
@@ -217,7 +241,7 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
                       onPressed: () {
                         _usercurrentLocation();
                       },
-                      child: Icon(MingCuteIcons.mgc_pin_2_fill),
+                      child: Icon(MingCuteIcons.mgc_map_pin_fill),
                     ),
                   ],
                 ),

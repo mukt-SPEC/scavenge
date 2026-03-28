@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scavenge/common/enums.dart';
+import 'package:scavenge/model/location.dart';
 
 class OnboardingState {
   final UserType? userType;
@@ -7,6 +8,7 @@ class OnboardingState {
   final String? phoneNumber;
   final String? vehicleLicensePlate;
   final List<WasteType>? preferredWasteTypes;
+  final Location? userLocation;
 
   OnboardingState({
     this.userType,
@@ -14,6 +16,7 @@ class OnboardingState {
     this.phoneNumber,
     this.vehicleLicensePlate,
     this.preferredWasteTypes,
+    this.userLocation,
   });
 
   OnboardingState copyWith({
@@ -22,6 +25,7 @@ class OnboardingState {
     String? phoneNumber,
     String? vehicleLicensePlate,
     List<WasteType>? preferredWasteTypes,
+    Location? userLocation,
   }) {
     return OnboardingState(
       userType: userType ?? this.userType,
@@ -29,6 +33,7 @@ class OnboardingState {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       vehicleLicensePlate: vehicleLicensePlate ?? this.vehicleLicensePlate,
       preferredWasteTypes: preferredWasteTypes ?? this.preferredWasteTypes,
+      userLocation: userLocation ?? this.userLocation,
     );
   }
 }
@@ -51,6 +56,10 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
 
   void setVehicleLicensePlate(String plate) {
     state = state.copyWith(vehicleLicensePlate: plate);
+  }
+
+  void setLocation(Location location) {
+    state = state.copyWith(userLocation: location);
   }
 
   void setPreferredWasteTypes(List<WasteType> wasteTypes) {

@@ -6,7 +6,7 @@ import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/common/enums.dart';
 import 'package:scavenge/features/authentication/widget/auth_text_field.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
-import 'package:scavenge/features/onboarding/view/location.dart';
+import 'package:scavenge/features/onboarding/view/location_view.dart';
 import 'package:scavenge/utils/formatter.dart';
 import 'package:scavenge/utils/validator.dart';
 

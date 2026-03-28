@@ -1,13 +1,9 @@
 class Location {
-  final double latitude;
-  final double longitude;
-  final String address;
+  double latitude;
+  double longitude;
+  String? address;
 
-  const Location({
-    required this.latitude,
-    required this.longitude,
-    required this.address,
-  });
+  Location({required this.latitude, required this.longitude, this.address});
 
   Map<String, dynamic> toMap() => {
     'latitude': latitude,
