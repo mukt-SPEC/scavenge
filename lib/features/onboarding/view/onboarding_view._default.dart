@@ -8,6 +8,7 @@ import 'package:scavenge/features/authentication/view/auth_page.dart';
 import 'package:scavenge/features/home/widget/header.dart';
 import 'package:scavenge/features/home/widget/quick_actions.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
+import 'package:scavenge/features/onboarding/view/agent_type.dart';
 import 'package:scavenge/features/onboarding/view/basic_info_page.dart';
 
 class OnboardingView extends ConsumerStatefulWidget {
@@ -38,7 +39,10 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/agent.png'),
+                    image:
+                        ref.read(onboardingProvider).userType == UserType.agent
+                        ? AssetImage('assets/images/agent.png')
+                        : AssetImage('assets/images/Bin.png'),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                       Colors.black.withValues(alpha: 0.2),
@@ -51,7 +55,9 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Recycle',
+                      ref.read(onboardingProvider).userType == UserType.agent
+                          ? 'Collect'
+                          : 'Recycle',
                       style: Theme.of(context).textTheme.displayLarge!.copyWith(
                         color: AppColors.white,
                         fontSize: 56,
@@ -107,12 +113,22 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 AppButton(
                   onPressed: ref.watch(onboardingProvider).userType != null
                       ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const BasicInfoPage(),
-                            ),
-                          );
+                          if (ref.watch(onboardingProvider).userType ==
+                              UserType.customer) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const BasicInfoPage(),
+                              ),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AgentTypeView(),
+                              ),
+                            );
+                          }
                         }
                       : null,
                   buttonText: 'Get Started',

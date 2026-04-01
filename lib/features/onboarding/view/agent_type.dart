@@ -6,6 +6,7 @@ import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/common/enums.dart';
 import 'package:scavenge/features/home/widget/quick_actions.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
+import 'package:scavenge/features/onboarding/view/basic_info_page.dart';
 import 'package:scavenge/features/onboarding/view/location_view.dart';
 
 class AgentTypeView extends ConsumerStatefulWidget {
@@ -32,6 +33,36 @@ class _AgentTypeViewState extends ConsumerState<AgentTypeView> {
               ).textTheme.displayLarge!.copyWith(color: AppColors.white),
             ),
             SizedBox(height: 24),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(24),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/agent.png'),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withValues(alpha: 0.4),
+                      BlendMode.darken,
+                    ),
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      ref.read(onboardingProvider).agentType == AgentType.mobile
+                          ? 'Travel to customers to collect their waste. Best for individuals with a bike, car, or truck who want to be on the move'
+                          : 'Best for businesses or individuals with a physical location (e.g., shop, office, or home) where customers can drop off their waste',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium!.copyWith(color: AppColors.white),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             Row(
               spacing: 8,
               children: [
@@ -69,36 +100,6 @@ class _AgentTypeViewState extends ConsumerState<AgentTypeView> {
                 ),
               ],
             ),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.all(24),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/agent.png'),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withValues(alpha: 0.2),
-                      BlendMode.darken,
-                    ),
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      ref.read(onboardingProvider).agentType == AgentType.mobile
-                          ? 'Travel to customers to collect their waste. Best for individuals with a bike, car, or truck who want to be on the move'
-                          : 'Best for businesses or individuals with a physical location (e.g., shop, office, or home) where customers can drop off their waste',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium!.copyWith(color: AppColors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ),
             SizedBox(height: 16),
             AppButton(
               onPressed: ref.watch(onboardingProvider).agentType != null
@@ -106,7 +107,7 @@ class _AgentTypeViewState extends ConsumerState<AgentTypeView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const LocationSelectPage(),
+                          builder: (_) => const BasicInfoPage(),
                         ),
                       );
                     }
