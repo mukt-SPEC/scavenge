@@ -5,6 +5,7 @@ import 'package:scavenge/features/Profile/service/profile_service.dart';
 import 'package:scavenge/features/authentication/model/auth_failure.dart';
 import 'package:scavenge/features/authentication/model/authstate.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
 import 'package:scavenge/model/user.dart';
 
 final profileControllerProvider =
@@ -29,6 +30,24 @@ class ProfileController extends StateNotifier<UserState> {
 
       state = UserSuccess(user: currentUser);
       return currentUser;
+    } on AuthFailure catch (error) {
+      state = UserFailure(error: error.message);
+      return null;
+    } catch (e) {
+      state = UserFailure(error: e.toString());
+      return null;
+    }
+  }
+
+  Future<UserModel?> saveUserFromOnboarding(
+    OnboardingState onboardingState,
+  ) async {
+    UserLoading();
+    try {
+      await _profileService.saveUserFromOnboarding(onboardingState);
+      final user = await getCurrentUser();
+      state = UserSuccess(user: user);
+      return user;
     } on AuthFailure catch (error) {
       state = UserFailure(error: error.message);
       return null;

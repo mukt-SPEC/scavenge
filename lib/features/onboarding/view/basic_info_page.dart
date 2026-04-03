@@ -80,9 +80,10 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
                       Align(
                         alignment: AlignmentGeometry.centerLeft,
                         child: Text(
-                          onboardingstate.userType == UserType.customer
-                              ? 'Customer'
-                              : 'Agent',
+                          // onboardingstate.userType == UserType.customer
+                          //     ? 'Customer'
+                          //     : 'Agent',
+                          'Setup your profile',
                           textAlign: TextAlign.left,
 
                           style: Theme.of(context).textTheme.displayLarge!
