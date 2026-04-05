@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
+import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/features/authentication/controller/auth_controller.dart';
 import 'package:scavenge/features/authentication/model/authstate.dart';
 import 'package:scavenge/features/authentication/widget/Display_sncakBar.dart';
@@ -66,7 +67,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
   Widget build(BuildContext context) {
     ref.listen(authControllerProvider, (_, next) {
       if (!context.mounted) return;
-      
+
       if (next is AuthError) {
         displaySnackBar(
           context,
@@ -141,15 +142,34 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                   onPressed: isSubmitting ? null : _forgotPassword,
                   child: const Text('Forgot password?'),
                 ),
-                ElevatedButton(
-                  onPressed: isSubmitting ? null : _signUp,
-                  child: isSubmitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Log in'),
+                AppButton(
+                  onPressed: isSignIn ? _logIn : _signUp,
+                  buttonText: isSignIn ? 'Log in' : 'Sign up',
+                  isLoading: isSubmitting,
+                ),
+                // ElevatedButton(
+                //   onPressed: isSubmitting ? null : (isSignIn ? _logIn : _signUp),
+                //   child: isSubmitting
+                //       ? const SizedBox(
+                //           width: 18,
+                //           height: 18,
+                //           child: CircularProgressIndicator(strokeWidth: 2),
+                //         )
+                //       : Text(isSignIn ? 'Log in' : 'Sign up'),
+                // ),
+                TextButton(
+                  onPressed: isSubmitting
+                      ? null
+                      : () {
+                          setState(() {
+                            isSignIn = !isSignIn;
+                          });
+                        },
+                  child: Text(
+                    isSignIn
+                        ? "Don't have an account? Sign up"
+                        : "Already have an account? Log in",
+                  ),
                 ),
               ],
             ),

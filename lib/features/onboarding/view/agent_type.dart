@@ -4,10 +4,14 @@ import 'package:ming_cute_icons/ming_cute_icons.dart';
 import 'package:scavenge/Theme/app_colors.dart';
 import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/common/enums.dart';
+import 'package:scavenge/features/Home/view/home_view.dart';
+import 'package:scavenge/features/Profile/controller/profile_controller.dart';
 
 import 'package:scavenge/features/home/widget/quick_actions.dart';
+import 'package:scavenge/features/onboarding/model/onboarding.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
 import 'package:scavenge/features/onboarding/view/basic_info_page.dart';
+import 'package:scavenge/provider/theme_provider.dart';
 
 class AgentTypeView extends ConsumerStatefulWidget {
   const AgentTypeView({super.key});
@@ -19,6 +23,9 @@ class AgentTypeView extends ConsumerStatefulWidget {
 class _AgentTypeViewState extends ConsumerState<AgentTypeView> {
   @override
   Widget build(BuildContext context) {
+    final onboardingState = ref.watch(onboardingProvider);
+    final prefs = ref.watch(sharedPreferencesProvider);
+    final onboarding = Onboarding(sharedPreferences: prefs);
     return Scaffold(
       appBar: AppBar(elevation: 0),
       body: Padding(
@@ -92,13 +99,27 @@ class _AgentTypeViewState extends ConsumerState<AgentTypeView> {
             SizedBox(height: 16),
             AppButton(
               onPressed: ref.watch(onboardingProvider).agentType != null
-                  ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const BasicInfoPage(),
-                        ),
-                      );
+                  ? () async {
+                      final result = await ref
+                          .read(profileControllerProvider.notifier)
+                          .saveUserFromOnboarding(onboardingState);
+                          
+                      if (result != null) {
+                        onboarding.onboarded(true);
+
+                        if (context.mounted) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const HomeView()),
+                          );
+                        }
+                      } else {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Failed to save profile. Please try again.')),
+                          );
+                        }
+                      }
                     }
                   : null,
               buttonText: 'Get Started',

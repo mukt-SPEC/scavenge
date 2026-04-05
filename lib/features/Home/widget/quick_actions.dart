@@ -32,10 +32,10 @@ class QuickAction extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Icon(icon, color: iconColor, size: 24),
-              Icon(
-                MingCuteIcons.mgc_arrow_right_up_fill,
-                color: Color(0xffb9b9b9),
-              ),
+              // Icon(
+              //   MingCuteIcons.mgc_arrow_right_up_fill,
+              //   color: Color(0xffb9b9b9),
+              // ),
             ],
           ),
           Text(

@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:scavenge/common/error_screen.dart';
-import 'package:scavenge/features/Profile/controller/profile_controller.dart';
 import 'package:scavenge/features/home/view/home_view.dart';
+import 'package:scavenge/features/onboarding/model/onboarding.dart';
 import 'package:scavenge/features/onboarding/view/onboarding_view._default.dart';
 import 'package:scavenge/provider/providers.dart';
 import 'package:scavenge/provider/theme_provider.dart';
@@ -31,34 +31,43 @@ class ScavengeApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(themeProvider);
-    final currentUser = ref.read(profileControllerProvider.notifier).getCurrentUser;
+    
+    // Check if user has onboarded
+    final prefs = ref.watch(sharedPreferencesProvider);
+    final onboarding = Onboarding(sharedPreferences: prefs);
+    final hasOnboarded = onboarding.isOnboarded();
+
     return MaterialApp(
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
-      home: OnboardingView(),
+      home: ref.watch(authStateChangesProvider).when(
+        data: (user) {
+          if (user == null) {
+           
+            return const AuthPage();
+          }
+          
+         
+          if (!hasOnboarded) {
+            return OnboardingView();
+          }
 
-      // home: ref
-      //     .watch(authStateChangesProvider)
-      //     .when(
-      //       data: (user) {
-      //         if (user == null) {
-      //           return LoginPage();
-      //         }
-      //         return HomeView();
-      //       },
-      //       error: (error, stackTrace) {
-      //         return ErrorScreen(
-      //           error: error.toString(),
-      //           onRefresh: () {
-      //             ref.invalidate(authStateChangesProvider);
-      //           },
-      //         );
-      //       },
-      //       loading: () {
-      //         return SizedBox();
-      //       },
-      //     ),
+         
+          return const HomeView();
+        },
+        error: (error, stackTrace) {
+          return ErrorScreen(
+            error: error.toString(),
+            onRefresh: () {
+              ref.invalidate(authStateChangesProvider);
+            },
+          );
+        },
+        loading: () {
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        },
+      ),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -6,14 +6,18 @@ import 'package:scavenge/constants/app_images.dart';
 import 'package:scavenge/features/home/widget/header.dart';
 import 'package:scavenge/features/home/widget/quick_actions.dart';
 
-class HomeView extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scavenge/provider/providers.dart';
+import 'package:scavenge/provider/theme_provider.dart';
+
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  ConsumerState<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends ConsumerState<HomeView> {
   List<Map<String, dynamic>> gridData = [
     {
       'icon': MingCuteIcons.mgc_recycle_fill,
@@ -77,16 +81,24 @@ class _HomeViewState extends State<HomeView> {
                           color: AppColors.white,
                         ),
                       ),
-                      Container(
-                        height: 48,
-                        width: 48,
-                        decoration: BoxDecoration(
-                          color: AppColors.cardDark,
-                          borderRadius: BorderRadius.circular(32),
-                        ),
-                        child: Icon(
-                          MingCuteIcons.mgc_more_2_fill,
-                          color: AppColors.white,
+                      GestureDetector(
+                        onTap: () async {
+                          // Sign out and clear onboarding status for testing
+                          await ref.read(firebaseAuthProvider).signOut();
+                          final prefs = ref.read(sharedPreferencesProvider);
+                          await prefs.remove('isOnboarded');
+                        },
+                        child: Container(
+                          height: 48,
+                          width: 48,
+                          decoration: BoxDecoration(
+                            color: AppColors.cardDark,
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          child: const Icon(
+                            MingCuteIcons.mgc_exit_door_fill, // Swapped to a door icon
+                            color: AppColors.white,
+                          ),
                         ),
                       ),
                     ],
