@@ -19,8 +19,8 @@ class BasicInfoPage extends ConsumerStatefulWidget {
 }
 
 class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
-  final nameController = TextEditingController();
-  final phoneNumberController = TextEditingController();
+  final nameController = TextEditingController(text: 'Test User');
+  final phoneNumberController = TextEditingController(text: '08123456789');
   final _formKey = GlobalKey<FormState>();
 
   @override

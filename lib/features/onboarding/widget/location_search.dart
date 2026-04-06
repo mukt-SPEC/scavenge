@@ -24,7 +24,9 @@ class _LocationSearchState extends State<LocationSearch> {
         Expanded(
           child: TextField(
             controller: widget.searchController,
-
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall!.copyWith(color: AppColors.white),
             decoration: InputDecoration(
               prefixIcon: IconButton(
                 onPressed: () {

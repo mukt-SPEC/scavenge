@@ -6,7 +6,6 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:icons_plus/icons_plus.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:ming_cute_icons/ming_cute_icons.dart';
@@ -28,6 +27,7 @@ class LocationSelectPage extends ConsumerStatefulWidget {
 
 class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
   bool _isMapReady = false;
+  bool _hasManuallyChangedLocation = false;
   @override
   void initState() {
     super.initState();
@@ -47,7 +47,7 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
             ) {
               if (currentLocation.latitude != null &&
                   currentLocation.longitude != null) {
-                if (mounted) {
+                if (mounted && !_hasManuallyChangedLocation) {
                   setState(() {
                     _currentLocation = LatLng(
                       currentLocation.latitude!,
@@ -106,6 +106,7 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
         final pos = await _determinePosition();
         if (mounted) {
           setState(() {
+            _hasManuallyChangedLocation = false;
             _currentLocation = LatLng(pos.latitude, pos.longitude);
           });
           if (_isMapReady) {
@@ -132,23 +133,49 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
 
   Future<void> fetchCoordinatesPoint(String location) async {
     final url = Uri.parse(
-      'https://nominatim.openstreetmap.org/search?format=json&q=$location',
+      'https://nominatim.openstreetmap.org/search?q=$location&format=json&limit=1',
     );
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data.isNotEmpty) {
-        final lat = data[0]['lat'];
-        final lng = data[0]['lon'];
-        if (mounted) {
-          setState(() {
-            _currentLocation = LatLng(double.parse(lat), double.parse(lng));
-          });
-          if (_isMapReady) {
-            _mapController.move(_currentLocation!, 15);
+    try {
+      final response = await http.get(
+        url,
+        // OpenStreetMap Nominatim requires a User-Agent header to avoid being blocked.
+        headers: {'User-Agent': 'scavenge_app'}, 
+      );
+      
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data.isNotEmpty) {
+          final lat = data[0]['lat'];
+          final lng = data[0]['lon'];
+          if (mounted) {
+            setState(() {
+              _hasManuallyChangedLocation = true;
+              _currentLocation = LatLng(double.parse(lat), double.parse(lng));
+            });
+            if (_isMapReady) {
+              _mapController.move(_currentLocation!, 15);
+            }
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Location not found')));
           }
         }
-      } else {}
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Failed to fetch location')));
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Network error occurred')));
+      }
     }
   }
 
@@ -237,19 +264,43 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
                     _mapController.move(_currentLocation!, 15);
                   }
                 },
+                onPositionChanged: (camera, hasGesture) {
+                  if (hasGesture) {
+                    setState(() {
+                      _hasManuallyChangedLocation = true;
+                      _currentLocation = camera.center;
+                    });
+                  }
+                },
+                onTap: (tapPosition, point) {
+                  setState(() {
+                    _hasManuallyChangedLocation = true;
+                    _currentLocation = point;
+                  });
+                  _mapController.move(point, _mapController.camera.zoom);
+                },
               ),
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.example.scavenge',
                 ),
-                CurrentLocationLayer(
-                  style: LocationMarkerStyle(
-                    marker: DefaultLocationMarker(
-                      child: Icon(MingCuteIcons.mgc_user_2_fill),
-                    ),
-                    markerSize: Size(32, 32),
-                  ),
+                CurrentLocationLayer(),
+                MarkerLayer(
+                  markers: [
+                    if (_currentLocation != null)
+                      Marker(
+                        point: _currentLocation!,
+                        width: 50,
+                        height: 50,
+                        alignment: Alignment.center,
+                        child: Icon(
+                          MingCuteIcons.mgc_location_fill,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 50,
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),
