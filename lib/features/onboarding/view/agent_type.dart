@@ -99,29 +99,39 @@ class _AgentTypeViewState extends ConsumerState<AgentTypeView> {
             SizedBox(height: 16),
             AppButton(
               onPressed: ref.watch(onboardingProvider).agentType != null
-                  ? () async {
-                      final result = await ref
-                          .read(profileControllerProvider.notifier)
-                          .saveUserFromOnboarding(onboardingState);
-                          
-                      if (result != null) {
-                        onboarding.onboarded(true);
-
-                        if (context.mounted) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const HomeView()),
-                          );
-                        }
-                      } else {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Failed to save profile. Please try again.')),
-                          );
-                        }
-                      }
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const BasicInfoPage(),
+                        ),
+                      );
                     }
                   : null,
+              // onPressed: ref.watch(onboardingProvider).agentType != null
+              //     ? () async {
+              //         final result = await ref
+              //             .read(profileControllerProvider.notifier)
+              //             .saveUserFromOnboarding(onboardingState);
+
+              //         if (result != null) {
+              //           onboarding.onboarded(true);
+
+              //           if (context.mounted) {
+              //             Navigator.push(
+              //               context,
+              //               MaterialPageRoute(builder: (_) => const HomeView()),
+              //             );
+              //           }
+              //         } else {
+              //           if (context.mounted) {
+              //             ScaffoldMessenger.of(context).showSnackBar(
+              //               const SnackBar(content: Text('Failed to save profile. Please try again.')),
+              //             );
+              //           }
+              //         }
+              //       }
+              //     : null,
               buttonText: 'Get Started',
             ),
             SizedBox(height: 40),

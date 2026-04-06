@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 import 'package:icons_plus/icons_plus.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
@@ -13,6 +15,7 @@ import 'package:scavenge/common/app_button.dart';
 import 'package:scavenge/common/enums.dart';
 import 'package:scavenge/features/onboarding/provider/onboarding_provider.dart';
 import 'package:scavenge/features/onboarding/view/preferred_waste.dart';
+import 'package:scavenge/features/onboarding/widget/location_search.dart';
 import 'package:scavenge/model/location.dart' as app_model;
 
 class LocationSelectPage extends ConsumerStatefulWidget {
@@ -24,6 +27,7 @@ class LocationSelectPage extends ConsumerStatefulWidget {
 }
 
 class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
+  bool _isMapReady = false;
   @override
   void initState() {
     super.initState();
@@ -33,7 +37,9 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
             setState(() {
               _currentLocation = LatLng(pos.latitude, pos.longitude);
             });
-            _mapController.move(_currentLocation!, 15);
+            if (_isMapReady) {
+              _mapController.move(_currentLocation!, 15);
+            }
 
             // Start listening to live location updates
             _locationSubscription = _location.onLocationChanged.listen((
@@ -48,10 +54,12 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
                       currentLocation.longitude!,
                     );
                   });
-                  _mapController.move(
-                    _currentLocation!,
-                    _mapController.camera.zoom,
-                  );
+                  if (_isMapReady) {
+                    _mapController.move(
+                      _currentLocation!,
+                      _mapController.camera.zoom,
+                    );
+                  }
                 }
               }
             });
@@ -100,7 +108,9 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
           setState(() {
             _currentLocation = LatLng(pos.latitude, pos.longitude);
           });
-          _mapController.move(_currentLocation!, 15);
+          if (_isMapReady) {
+            _mapController.move(_currentLocation!, 15);
+          }
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
         }
       } catch (e) {
@@ -110,6 +120,35 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
           ).showSnackBar(SnackBar(content: Text('$e')));
         }
       }
+    }
+  }
+
+  // Future<void> _handleTap(TapPosition tapPosition, LatLng latlng) async {
+  //   setState(() {
+  //     _currentLocation = latlng;
+  //   });
+  //   _mapController.move(latlng, _mapController.camera.zoom);
+  // }
+
+  Future<void> fetchCoordinatesPoint(String location) async {
+    final url = Uri.parse(
+      'https://nominatim.openstreetmap.org/search?format=json&q=$location',
+    );
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data.isNotEmpty) {
+        final lat = data[0]['lat'];
+        final lng = data[0]['lon'];
+        if (mounted) {
+          setState(() {
+            _currentLocation = LatLng(double.parse(lat), double.parse(lng));
+          });
+          if (_isMapReady) {
+            _mapController.move(_currentLocation!, 15);
+          }
+        }
+      } else {}
     }
   }
 
@@ -152,6 +191,7 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
   }
 
   final _mapController = MapController();
+  final _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final onboardingState = ref.watch(onboardingProvider);
@@ -189,6 +229,14 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
               options: MapOptions(
                 initialZoom: 8,
                 initialCenter: _currentLocation ?? const LatLng(0, 0),
+                onMapReady: () {
+                  setState(() {
+                    _isMapReady = true;
+                  });
+                  if (_currentLocation != null) {
+                    _mapController.move(_currentLocation!, 15);
+                  }
+                },
               ),
               children: [
                 TileLayer(
@@ -204,6 +252,19 @@ class _LocationSelectPageState extends ConsumerState<LocationSelectPage> {
                   ),
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            top: 150,
+            left: 16,
+            right: 16,
+            child: LocationSearch(
+              searchController: _searchController,
+              onPressed: () {
+                if (_searchController.text.isNotEmpty) {
+                  fetchCoordinatesPoint(_searchController.text.trim());
+                }
+              },
             ),
           ),
           Padding(

@@ -53,7 +53,7 @@ class _BasicInfoPageState extends ConsumerState<BasicInfoPage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const AgentTypeView()),
+        MaterialPageRoute(builder: (_) => const LocationSelectPage()),
       );
     }
   }

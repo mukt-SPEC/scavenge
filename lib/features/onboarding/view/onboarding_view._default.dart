@@ -55,7 +55,10 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      ref.read(onboardingProvider).userType == UserType.agent
+                      ref.read(onboardingProvider).userType == null
+                          ? ''
+                          : ref.read(onboardingProvider).userType ==
+                                UserType.agent
                           ? 'Collect'
                           : 'Recycle',
                       style: Theme.of(context).textTheme.displayLarge!.copyWith(
